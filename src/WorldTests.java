@@ -63,11 +63,11 @@ public class WorldTests {
         assertEquals(0, entities.size());
 
         assertThrows(IllegalArgumentException.class, () ->
-            VirtualWorld.headlessMain(new String[]{"Entities:\noops"}, 1)
+                VirtualWorld.headlessMain(new String[]{"Entities:\noops"}, 1)
         );
 
         assertThrows(IllegalArgumentException.class, () ->
-            VirtualWorld.headlessMain(new String[]{"Entities:\noops _ 0 0"}, 1)
+                VirtualWorld.headlessMain(new String[]{"Entities:\noops _ 0 0"}, 1)
         );
 
         assertDoesNotThrow(() -> VirtualWorld.headlessMain(new String[]{"Rows:\n1"}, 1));
@@ -87,7 +87,7 @@ public class WorldTests {
         String sav = makeSave(1, 1, "stump stumpo 0 0", "stump stumpy 0 0");
 
         assertThrows(IllegalArgumentException.class, () ->
-            VirtualWorld.headlessMain(new String[]{sav}, 1)
+                VirtualWorld.headlessMain(new String[]{sav}, 1)
         );
     }
 
