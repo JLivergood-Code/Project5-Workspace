@@ -1,1 +1,7 @@
-parse*():
+parse*(): I decided to put these in teh WorldModel because I thought it made sense that the world would decide to parse
+the objects and decided where, when and how the object would be put into the world. I also thought that they would be a
+better fit in WorldModel because they call more function from the WorldModel class.
+
+create*(): I placed these in the Entity class and kept them static. I thought they didn't deserve to be in a specific
+class, since they didn't call a class. But I did think it made sense that the Entity class would create objects and
+entities.
