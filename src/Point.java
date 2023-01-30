@@ -2,8 +2,8 @@
  * A simple class representing a location in 2D space.
  */
 public final class Point {
-    public final int x;
-    public final int y;
+    private final int x;
+    private final int y;
 
     public Point(int x, int y) {
         this.x = x;
@@ -11,17 +11,25 @@ public final class Point {
     }
 
     public String toString() {
-        return "(" + x + "," + y + ")";
+        return "(" + getX() + "," + getY() + ")";
     }
 
     public boolean equals(Object other) {
-        return other instanceof Point && ((Point) other).x == this.x && ((Point) other).y == this.y;
+        return other instanceof Point && ((Point) other).getX() == this.getX() && ((Point) other).getY() == this.getY();
     }
 
     public int hashCode() {
         int result = 17;
-        result = result * 31 + x;
-        result = result * 31 + y;
+        result = result * 31 + getX();
+        result = result * 31 + getY();
         return result;
+    }
+
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
     }
 }

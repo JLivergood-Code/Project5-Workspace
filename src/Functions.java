@@ -9,7 +9,7 @@ import processing.core.PApplet;
  * by refactoring this codebase to follow an OOP style.
  */
 public final class Functions {
-    public static final Random rand = new Random();
+    private static final Random rand = new Random();
 
     public static final int COLOR_MASK = 0xffffff;
     public static final int KEYED_IMAGE_MIN = 5;
@@ -19,27 +19,8 @@ public final class Functions {
 
     private static final List<String> PATH_KEYS = new ArrayList<>(Arrays.asList("bridge", "dirt", "dirt_horiz", "dirt_vert_left", "dirt_vert_right", "dirt_bot_left_corner", "dirt_bot_right_up", "dirt_vert_left_bot"));
 
-    public static final double SAPLING_ACTION_ANIMATION_PERIOD = 1.000; // have to be in sync since grows and gains health at same time
-    public static final int SAPLING_HEALTH_LIMIT = 5;
-
-
-    public static final int PROPERTY_ID = 1;
-    public static final int PROPERTY_COL = 2;
-    public static final int PROPERTY_ROW = 3;
-    public static final int ENTITY_NUM_PROPERTIES = 4;
-
-
-
-
-
-
-
-
-
-
-
-
-
+    private static final double SAPLING_ACTION_ANIMATION_PERIOD = 1.000; // have to be in sync since grows and gains health at same time
+    private static final int SAPLING_HEALTH_LIMIT = 5;
 
 
     // Entity
@@ -131,7 +112,7 @@ public final class Functions {
 
     //stay
     public static boolean adjacent(Point p1, Point p2) {
-        return (p1.x == p2.x && Math.abs(p1.y - p2.y) == 1) || (p1.y == p2.y && Math.abs(p1.x - p2.x) == 1);
+        return (p1.getX() == p2.getX() && Math.abs(p1.getY() - p2.getY()) == 1) || (p1.getY() == p2.getY() && Math.abs(p1.getX() - p2.getX()) == 1);
     }
 
     //stay
@@ -197,30 +178,12 @@ public final class Functions {
 
 
     //static
-    public static Optional<Entity> nearestEntity(List<Entity> entities, Point pos) {
-        if (entities.isEmpty()) {
-            return Optional.empty();
-        } else {
-            Entity nearest = entities.get(0);
-            int nearestDistance = distanceSquared(nearest.getPosition(), pos);
 
-            for (Entity other : entities) {
-                int otherDistance = distanceSquared(other.getPosition(), pos);
-
-                if (otherDistance < nearestDistance) {
-                    nearest = other;
-                    nearestDistance = otherDistance;
-                }
-            }
-
-            return Optional.of(nearest);
-        }
-    }
 
     //static or Point
     public static int distanceSquared(Point p1, Point p2) {
-        int deltaX = p1.x - p2.x;
-        int deltaY = p1.y - p2.y;
+        int deltaX = p1.getX() - p2.getX();
+        int deltaY = p1.getY() - p2.getY();
 
         return deltaX * deltaX + deltaY * deltaY;
     }
@@ -323,7 +286,7 @@ public final class Functions {
     //static
     public static PImage getCurrentImage(Object object) {
         if (object instanceof Background background) {
-            return background.images.get(background.imageIndex);
+            return background.getImages().get(background.getImageIndex());
         } else if (object instanceof Entity entity) {
             return entity.getImages().get(entity.getImageIndex() % entity.getImages().size());
         } else {

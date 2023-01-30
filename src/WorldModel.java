@@ -44,11 +44,15 @@ public final class WorldModel {
     private static final int DUDE_NUM_PROPERTIES = 3;
     private static final int PROPERTY_KEY = 0;
 
+    private final int PROPERTY_ID = 1;
+    private final int PROPERTY_COL = 2;
+    private final int PROPERTY_ROW = 3;
+    private final int ENTITY_NUM_PROPERTIES = 4;
 
-    public static final int STUMP_NUM_PROPERTIES = 0;
+    private static final int STUMP_NUM_PROPERTIES = 0;
 
-    public static final int SAPLING_HEALTH = 0;
-    public static final int SAPLING_NUM_PROPERTIES = 1;
+    private static final int SAPLING_HEALTH = 0;
+    private static final int SAPLING_NUM_PROPERTIES = 1;
     public WorldModel() {
 
     }
@@ -58,11 +62,11 @@ public final class WorldModel {
     }
 
     public void setBackgroundCell(Point pos, Background background) {
-        this.background[pos.y][pos.x] = background;
+        this.background[pos.getY()][pos.getX()] = background;
     }
 
     public Background getBackgroundCell(Point pos) {
-        return background[pos.y][pos.x];
+        return background[pos.getY()][pos.getX()];
     }
 
     public Optional<PImage> getBackgroundImage(Point pos) {
@@ -110,14 +114,14 @@ public final class WorldModel {
     }
 
     public void parseEntity(String line, ImageStore imageStore) {
-        String[] properties = line.split(" ", Functions.ENTITY_NUM_PROPERTIES + 1);
-        if (properties.length >= Functions.ENTITY_NUM_PROPERTIES) {
+        String[] properties = line.split(" ", ENTITY_NUM_PROPERTIES + 1);
+        if (properties.length >= ENTITY_NUM_PROPERTIES) {
             String key = properties[PROPERTY_KEY];
-            String id = properties[Functions.PROPERTY_ID];
-            Point pt = new Point(Integer.parseInt(properties[Functions.PROPERTY_COL]), Integer.parseInt(properties[Functions.PROPERTY_ROW]));
+            String id = properties[PROPERTY_ID];
+            Point pt = new Point(Integer.parseInt(properties[PROPERTY_COL]), Integer.parseInt(properties[PROPERTY_ROW]));
 
-            properties = properties.length == Functions.ENTITY_NUM_PROPERTIES ?
-                    new String[0] : properties[Functions.ENTITY_NUM_PROPERTIES].split(" ");
+            properties = properties.length == ENTITY_NUM_PROPERTIES ?
+                    new String[0] : properties[ENTITY_NUM_PROPERTIES].split(" ");
 
             switch (key) {
                 case OBSTACLE_KEY -> this.parseObstacle(properties, pt, id, imageStore);
@@ -228,7 +232,7 @@ public final class WorldModel {
     }
 
     public boolean withinBounds(Point pos) {
-        return pos.y >= 0 && pos.y < this.getNumRows() && pos.x >= 0 && pos.x < this.getNumCols();
+        return pos.getY() >= 0 && pos.getY() < this.getNumRows() && pos.getX() >= 0 && pos.getX() < this.getNumCols();
     }
 
     public void addEntity(Entity entity) {
@@ -267,11 +271,11 @@ public final class WorldModel {
     }
 
     public Entity getOccupancyCell(Point pos) {
-        return this.occupancy[pos.y][pos.x];
+        return this.occupancy[pos.getY()][pos.getX()];
     }
 
     public void setOccupancyCell(Point pos, Entity entity) {
-        this.occupancy[pos.y][pos.x] = entity;
+        this.occupancy[pos.getY()][pos.getX()] = entity;
     }
 
     public Optional<Entity> getOccupant(Point pos) {
@@ -305,9 +309,14 @@ public final class WorldModel {
             }
         }
 
-        return Functions.nearestEntity(ofType, pos);
+        return Entity.nearestEntity(ofType, pos);
     }
 
+
+
+
+
+    /* ------------------------------------Getters/methods-----------------------------------------*/
     public static String getSaplingKey() {
         return SAPLING_KEY;
     }
@@ -315,8 +324,6 @@ public final class WorldModel {
     public static String getTreeKey() {
         return TREE_KEY;
     }
-
-
     public int getNumRows() {
         return numRows;
     }

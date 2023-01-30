@@ -19,15 +19,15 @@ public final class WorldView {
     }
 
     public void shiftView(int colDelta, int rowDelta) {
-        int newCol = Functions.clamp(this.getViewport().col + colDelta, 0, this.world.getNumCols() - this.getViewport().numCols);
-        int newRow = Functions.clamp(this.getViewport().row + rowDelta, 0, this.world.getNumRows() - this.getViewport().numRows);
+        int newCol = Functions.clamp(this.getViewport().getCol() + colDelta, 0, this.world.getNumCols() - this.getViewport().getNumCols());
+        int newRow = Functions.clamp(this.getViewport().getRow() + rowDelta, 0, this.world.getNumRows() - this.getViewport().getNumCols());
 
         this.getViewport().shift(newCol, newRow);
     }
 
     public void drawBackground() {
-        for (int row = 0; row < this.getViewport().numRows; row++) {
-            for (int col = 0; col < this.getViewport().numCols; col++) {
+        for (int row = 0; row < this.getViewport().getNumCols(); row++) {
+            for (int col = 0; col < this.getViewport().getNumCols(); col++) {
                 Point worldPoint = this.getViewport().viewportToWorld(col, row);
                 Optional<PImage> image = this.world.getBackgroundImage(worldPoint);
                 if (image.isPresent()) {
@@ -46,8 +46,8 @@ public final class WorldView {
             Point pos = entity.getPosition();
 
             if (this.getViewport().contains(pos)) {
-                Point viewPoint = this.getViewport().worldToViewport(pos.x, pos.y);
-                this.screen.image(Functions.getCurrentImage(entity), viewPoint.x * this.tileWidth, viewPoint.y * this.tileHeight);
+                Point viewPoint = this.getViewport().worldToViewport(pos.getX(), pos.getY());
+                this.screen.image(Functions.getCurrentImage(entity), viewPoint.getX() * this.tileWidth, viewPoint.getY() * this.tileHeight);
             }
         }
     }
