@@ -21,6 +21,8 @@ public final class Entity {
 
     /*-----------------------Keys---------------------------------------*/
 
+    private static final double SAPLING_ACTION_ANIMATION_PERIOD = 1.000; // have to be in sync since grows and gains health at same time
+    private static final int SAPLING_HEALTH_LIMIT = 5;
 
     private static final double TREE_ANIMATION_MAX = 0.600;
     private static final double TREE_ANIMATION_MIN = 0.050;
@@ -48,6 +50,49 @@ public final class Entity {
             return Optional.of(nearest);
         }
     }
+
+    public static Entity createHouse(String id, Point position, List<PImage> images) {
+        return new Entity(EntityKind.HOUSE, id, position, images, 0, 0, 0, 0, 0, 0);
+    }
+
+    //static
+    public static Entity createObstacle(String id, Point position, double animationPeriod, List<PImage> images) {
+        return new Entity(EntityKind.OBSTACLE, id, position, images, 0, 0, 0, animationPeriod, 0, 0);
+    }
+
+    //static
+    public static Entity createTree(String id, Point position, double actionPeriod, double animationPeriod, int health, List<PImage> images) {
+        return new Entity(EntityKind.TREE, id, position, images, 0, 0, actionPeriod, animationPeriod, health, 0);
+    }
+
+    //static
+    public static Entity createStump(String id, Point position, List<PImage> images) {
+        return new Entity(EntityKind.STUMP, id, position, images, 0, 0, 0, 0, 0, 0);
+    }
+
+    //static
+    // health starts at 0 and builds up until ready to convert to Tree
+    public static Entity createSapling(String id, Point position, List<PImage> images, int health) {
+        return new Entity(EntityKind.SAPLING, id, position, images, 0, 0, SAPLING_ACTION_ANIMATION_PERIOD, SAPLING_ACTION_ANIMATION_PERIOD, 0, SAPLING_HEALTH_LIMIT);
+    }
+
+    //static
+    public static Entity createFairy(String id, Point position, double actionPeriod, double animationPeriod, List<PImage> images) {
+        return new Entity(EntityKind.FAIRY, id, position, images, 0, 0, actionPeriod, animationPeriod, 0, 0);
+    }
+
+    //static
+    // need resource count, though it always starts at 0
+    public static Entity createDudeNotFull(String id, Point position, double actionPeriod, double animationPeriod, int resourceLimit, List<PImage> images) {
+        return new Entity(EntityKind.DUDE_NOT_FULL, id, position, images, resourceLimit, 0, actionPeriod, animationPeriod, 0, 0);
+    }
+
+    //static
+    // don't technically need resource count ... full
+    public static Entity createDudeFull(String id, Point position, double actionPeriod, double animationPeriod, int resourceLimit, List<PImage> images) {
+        return new Entity(EntityKind.DUDE_FULL, id, position, images, resourceLimit, 0, actionPeriod, animationPeriod, 0, 0);
+    }
+
 
     public Entity(EntityKind kind, String id, Point position, List<PImage> images, int resourceLimit, int resourceCount, double actionPeriod, double animationPeriod, int health, int healthLimit) {
         this.setKind(kind);
@@ -112,7 +157,7 @@ public final class Entity {
 
             if (this.moveToFairy(world, fairyTarget.get(), scheduler)) {
 
-                Entity sapling = Functions.createSapling(WorldModel.getSaplingKey() + "_" + fairyTarget.get().getId(), tgtPos, imageStore.getImageList(WorldModel.getSaplingKey()), 0);
+                Entity sapling = Entity.createSapling(WorldModel.getSaplingKey() + "_" + fairyTarget.get().getId(), tgtPos, imageStore.getImageList(WorldModel.getSaplingKey()), 0);
 
                 world.addEntity(sapling);
                 sapling.scheduleActions(scheduler, world, imageStore);
@@ -178,7 +223,7 @@ public final class Entity {
 
     public boolean transformNotFull(WorldModel world, EventScheduler scheduler, ImageStore imageStore) {
         if (this.resourceCount >= this.resourceLimit) {
-            Entity dude = Functions.createDudeFull(this.id, this.position, this.actionPeriod, this.animationPeriod, this.resourceLimit, this.images);
+            Entity dude = Entity.createDudeFull(this.id, this.position, this.actionPeriod, this.animationPeriod, this.resourceLimit, this.images);
 
             world.removeEntity(scheduler, this);
             scheduler.unscheduleAllEvents(this);
@@ -193,7 +238,7 @@ public final class Entity {
     }
 
     public void transformFull(WorldModel world, EventScheduler scheduler, ImageStore imageStore) {
-        Entity dude = Functions.createDudeNotFull(this.getId(), this.position, this.actionPeriod, this.animationPeriod, this.resourceLimit, this.getImages());
+        Entity dude = Entity.createDudeNotFull(this.getId(), this.position, this.actionPeriod, this.animationPeriod, this.resourceLimit, this.getImages());
 
         world.removeEntity(scheduler, this);
 
@@ -213,7 +258,7 @@ public final class Entity {
 
     public boolean transformTree(WorldModel world, EventScheduler scheduler, ImageStore imageStore) {
         if (this.health <= 0) {
-            Entity stump = Functions.createStump(WorldModel.getStumpKey() + "_" + this.id, this.position, imageStore.getImageList(WorldModel.getStumpKey()));
+            Entity stump = Entity.createStump(WorldModel.getStumpKey() + "_" + this.id, this.position, imageStore.getImageList(WorldModel.getStumpKey()));
 
             world.removeEntity(scheduler, this);
 
@@ -227,7 +272,7 @@ public final class Entity {
 
     public boolean transformSapling(WorldModel world, EventScheduler scheduler, ImageStore imageStore) {
         if (this.getHealth() <= 0) {
-            Entity stump = Functions.createStump(WorldModel.getStumpKey() + "_" + this.id, this.position, imageStore.getImageList(WorldModel.getStumpKey()));
+            Entity stump = Entity.createStump(WorldModel.getStumpKey() + "_" + this.id, this.position, imageStore.getImageList(WorldModel.getStumpKey()));
 
             world.removeEntity(scheduler, this);
 
@@ -235,7 +280,7 @@ public final class Entity {
 
             return true;
         } else if (this.health >= this.healthLimit) {
-            Entity tree = Functions.createTree(WorldModel.getTreeKey() + "_" + this.id, this.position, Functions.getNumFromRange(TREE_ACTION_MAX, TREE_ACTION_MIN), Functions.getNumFromRange(TREE_ANIMATION_MAX, TREE_ANIMATION_MIN), Functions.getIntFromRange(TREE_HEALTH_MAX, TREE_HEALTH_MIN), imageStore.getImageList(WorldModel.getTreeKey()));
+            Entity tree = Entity.createTree(WorldModel.getTreeKey() + "_" + this.id, this.position, Functions.getNumFromRange(TREE_ACTION_MAX, TREE_ACTION_MIN), Functions.getNumFromRange(TREE_ANIMATION_MAX, TREE_ANIMATION_MIN), Functions.getIntFromRange(TREE_HEALTH_MAX, TREE_HEALTH_MIN), imageStore.getImageList(WorldModel.getTreeKey()));
 
             world.removeEntity(scheduler, this);
 
