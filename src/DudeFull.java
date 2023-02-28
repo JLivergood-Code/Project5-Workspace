@@ -7,17 +7,14 @@ import processing.core.PImage;
  * different kinds of entities that exist.
  */
 public final class DudeFull implements Actionable, Scheduable{
-    private EntityKind kind;
     private String id;
     private Point position;
     private List<PImage> images;
     private int imageIndex;
     private final int resourceLimit;
-    private int resourceCount;
     private final double actionPeriod;
     private final double animationPeriod;
-    private int health;
-    private final int healthLimit;
+
 
     /*-----------------------Keys---------------------------------------*/
 
@@ -29,17 +26,13 @@ public final class DudeFull implements Actionable, Scheduable{
 
 
     public DudeFull(String id, Point position, List<PImage> images, int resourceLimit, int resourceCount, double actionPeriod, double animationPeriod, int health, int healthLimit) {
-        this.setKind(kind);
         this.setId(id);
         this.setPosition(position);
         this.setImages(images);
         this.setImageIndex(0);
         this.resourceLimit = resourceLimit;
-        this.resourceCount = resourceCount;
         this.actionPeriod = actionPeriod;
         this.animationPeriod = animationPeriod;
-        this.setHealth(health);
-        this.healthLimit = healthLimit;
     }
 
 
@@ -47,10 +40,6 @@ public final class DudeFull implements Actionable, Scheduable{
     /**
      * Helper method for testing. Preserve this functionality while refactoring.
      */
-    public String log(){
-        return this.getId().isEmpty() ? null :
-                String.format("%s %d %d %d", this.getId(), this.getPosition().getX(), this.getPosition().getY(), this.getImageIndex());
-    }
 
     public double getAnimationPeriod() {
         return this.animationPeriod;
@@ -58,7 +47,7 @@ public final class DudeFull implements Actionable, Scheduable{
 
     //Entity
     public void executeActivity(WorldModel world, ImageStore imageStore, EventScheduler scheduler) {
-        Optional<Entity> fullTarget = world.findNearest(this.getPosition(), new ArrayList<>(List.of(EntityKind.HOUSE)));
+        Optional<Entity> fullTarget = world.findNearest(this.getPosition(), new ArrayList<>(List.of(House.class)));
 
         if (fullTarget.isPresent() && this.moveToFull(world, fullTarget.get(), scheduler)) {
             this.transformFull(world, scheduler, imageStore);
@@ -71,21 +60,6 @@ public final class DudeFull implements Actionable, Scheduable{
         scheduler.scheduleEvent(this, this.createAnimationAction(0), this.getAnimationPeriod());
     }
 
-    public boolean transformNotFull(WorldModel world, EventScheduler scheduler, ImageStore imageStore) {
-        if (this.resourceCount >= this.resourceLimit) {
-            Scheduable dude = DudeFull.createDudeFull(this.id, this.position, this.actionPeriod, this.animationPeriod, this.resourceLimit, this.images);
-
-            world.removeEntity(scheduler, this);
-            scheduler.unscheduleAllEvents(this);
-
-            world.addEntity(dude);
-            dude.scheduleActions(scheduler, world, imageStore);
-
-            return true;
-        }
-
-        return false;
-    }
 
     public void transformFull(WorldModel world, EventScheduler scheduler, ImageStore imageStore) {
         Scheduable dude = DudeNotFull.createDudeNotFull(this.getId(), this.position, this.actionPeriod, this.animationPeriod, this.resourceLimit, this.getImages());
@@ -96,24 +70,11 @@ public final class DudeFull implements Actionable, Scheduable{
         dude.scheduleActions(scheduler, world, imageStore);
     }
 
-
-
-    //change Entity to plant interface
-    //check for plant interface and downcast
-    public boolean moveToNotFull(WorldModel world, Entity target, EventScheduler scheduler) {
-        if (Functions.adjacent(this.position, target.getPosition())) {
-            this.resourceCount += 1;
-            target.setHealth(target.getHealth() - 1);
-            return true;
-        } else {
-            Point nextPos = this.nextPositionDude(world, target.getPosition());
-
-            if (!this.position.equals(nextPos)) {
-                world.moveEntity(scheduler, this, nextPos);
-            }
-            return false;
-        }
+    public PImage getCurrentImage() {
+        return getImages().get(this.getImageIndex() % this.getImages().size());
     }
+
+
 
     public boolean moveToFull(WorldModel world, Entity target, EventScheduler scheduler) {
         if (Functions.adjacent(this.position, target.getPosition())) {
@@ -167,22 +128,12 @@ public final class DudeFull implements Actionable, Scheduable{
 
     public void setPosition(Point position) { this.position = position; }
 
-    public void setKind(EntityKind kind) { this.kind = kind; }
-
     public String getId() {
         return id;
     }
 
     public void setId(String id) {
         this.id = id;
-    }
-
-    public int getHealth() {
-        return health;
-    }
-
-    public void setHealth(int health) {
-        this.health = health;
     }
 
     public List<PImage> getImages() {

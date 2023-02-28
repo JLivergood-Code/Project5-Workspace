@@ -25,7 +25,7 @@ public final class Stump implements Entity {
         this.setPosition(position);
         this.setImages(images);
         this.setImageIndex(0);
-        this.setHealth(health);
+
     }
 
 
@@ -33,13 +33,12 @@ public final class Stump implements Entity {
     /**
      * Helper method for testing. Preserve this functionality while refactoring.
      */
-    public String log(){
-        return this.getId().isEmpty() ? null :
-                String.format("%s %d %d %d", this.getId(), this.getPosition().getX(), this.getPosition().getY(), this.getImageIndex());
-    }
 
     public double getAnimationPeriod() {
         throw new UnsupportedOperationException(String.format("getAnimationPeriod not supported for %s", this.getClass()));
+    }
+    public PImage getCurrentImage() {
+        return getImages().get(this.getImageIndex() % this.getImages().size());
     }
 
 
@@ -65,13 +64,6 @@ public final class Stump implements Entity {
         this.id = id;
     }
 
-    public int getHealth() {
-        return health;
-    }
-
-    public void setHealth(int health) {
-        this.health = health;
-    }
 
     public List<PImage> getImages() {
         return images;

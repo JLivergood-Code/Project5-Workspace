@@ -6,8 +6,7 @@ import processing.core.PImage;
  * An entity that exists in the world. See EntityKind for the
  * different kinds of entities that exist.
  */
-public final class Fairy implements Actionable {
-    private EntityKind kind;
+public final class Fairy implements Actionable,Scheduable {
     private String id;
     private Point position;
     private List<PImage> images;
@@ -18,21 +17,6 @@ public final class Fairy implements Actionable {
     private double animationPeriod;
     private int health;
     private int healthLimit;
-
-    /*-----------------------Keys---------------------------------------*/
-
-    private static final double SAPLING_ACTION_ANIMATION_PERIOD = 1.000; // have to be in sync since grows and gains health at same time
-    private static final int SAPLING_HEALTH_LIMIT = 5;
-
-    private static final double TREE_ANIMATION_MAX = 0.600;
-    private static final double TREE_ANIMATION_MIN = 0.050;
-    private static final double TREE_ACTION_MAX = 1.400;
-    private static final double TREE_ACTION_MIN = 1.000;
-    private static final int TREE_HEALTH_MAX = 3;
-    private static final int TREE_HEALTH_MIN = 1;
-
-
-
 
     //static
     public static Fairy createFairy(String id, Point position, double actionPeriod, double animationPeriod, List<PImage> images) {
@@ -50,7 +34,6 @@ public final class Fairy implements Actionable {
         this.resourceCount = resourceCount;
         this.actionPeriod = actionPeriod;
         this.animationPeriod = animationPeriod;
-        this.setHealth(health);
         this.healthLimit = healthLimit;
     }
 
@@ -59,29 +42,15 @@ public final class Fairy implements Actionable {
     /**
      * Helper method for testing. Preserve this functionality while refactoring.
      */
-    public String log(){
-        return this.getId().isEmpty() ? null :
-                String.format("%s %d %d %d", this.getId(), this.getPosition().getX(), this.getPosition().getY(), this.getImageIndex());
-    }
 
     public double getAnimationPeriod() {
-        switch (this.getKind()) {
-            case DUDE_FULL:
-            case DUDE_NOT_FULL:
-            case OBSTACLE:
-            case FAIRY:
-            case SAPLING:
-            case TREE:
-                return this.animationPeriod;
-            default:
-                throw new UnsupportedOperationException(String.format("getAnimationPeriod not supported for %s", this.getKind()));
-        }
+        return this.animationPeriod;
     }
 
 
     //Entity
     public void executeActivity(WorldModel world, ImageStore imageStore, EventScheduler scheduler) {
-        Optional<Entity> fairyTarget = world.findNearest(this.getPosition(), new ArrayList<>(List.of(EntityKind.STUMP)));
+        Optional<Entity> fairyTarget = world.findNearest(this.getPosition(), new ArrayList<>(List.of(Stump.class)));
 
         if (fairyTarget.isPresent()) {
             Point tgtPos = fairyTarget.get().getPosition();
@@ -143,6 +112,9 @@ public final class Fairy implements Actionable {
     public Action createActivityAction(WorldModel world, ImageStore imageStore) {
         return new Activity(this, world, imageStore);
     }
+    public PImage getCurrentImage() {
+        return getImages().get(this.getImageIndex() % this.getImages().size());
+    }
 
 
     /*----------------------------------Getters ands Setters------------------------------------------------------------
@@ -158,9 +130,6 @@ public final class Fairy implements Actionable {
 
     public void setPosition(Point position) { this.position = position; }
 
-    public EntityKind getKind() { return kind; }
-
-    public void setKind(EntityKind kind) { this.kind = kind; }
 
     public String getId() {
         return id;
@@ -168,14 +137,6 @@ public final class Fairy implements Actionable {
 
     public void setId(String id) {
         this.id = id;
-    }
-
-    public int getHealth() {
-        return health;
-    }
-
-    public void setHealth(int health) {
-        this.health = health;
     }
 
     public List<PImage> getImages() {

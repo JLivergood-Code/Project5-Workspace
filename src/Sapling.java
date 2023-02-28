@@ -6,8 +6,7 @@ import processing.core.PImage;
  * An entity that exists in the world. See EntityKind for the
  * different kinds of entities that exist.
  */
-public final class Sapling implements Actionable{
-    private EntityKind kind;
+public final class Sapling implements Actionable, Scheduable, Plant{
     private String id;
     private Point position;
     private List<PImage> images;
@@ -63,17 +62,7 @@ public final class Sapling implements Actionable{
     }
 
     public double getAnimationPeriod() {
-        switch (this.getKind()) {
-            case DUDE_FULL:
-            case DUDE_NOT_FULL:
-            case OBSTACLE:
-            case FAIRY:
-            case SAPLING:
-            case TREE:
-                return this.animationPeriod;
-            default:
-                throw new UnsupportedOperationException(String.format("getAnimationPeriod not supported for %s", this.getKind()));
-        }
+        return this.animationPeriod;
     }
 
     public void executeActivity(WorldModel world, ImageStore imageStore, EventScheduler scheduler) {
@@ -127,6 +116,9 @@ public final class Sapling implements Actionable{
     public Action createActivityAction(WorldModel world, ImageStore imageStore) {
         return new Activity(this, world, imageStore);
     }
+    public PImage getCurrentImage() {
+        return getImages().get(this.getImageIndex() % this.getImages().size());
+    }
 
 
     /*----------------------------------Getters ands Setters------------------------------------------------------------
@@ -141,10 +133,6 @@ public final class Sapling implements Actionable{
     public Point getPosition() { return position; }
 
     public void setPosition(Point position) { this.position = position; }
-
-    public EntityKind getKind() { return kind; }
-
-    public void setKind(EntityKind kind) { this.kind = kind; }
 
     public String getId() {
         return id;

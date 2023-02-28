@@ -27,7 +27,8 @@ public final class Background {
         return imageIndex;
     }
 
-    public void setImageIndex(int imageIndex) {
-        this.imageIndex = imageIndex;
+    public PImage getCurrentImage() {
+            return this.getImages().get(this.getImageIndex());
+
     }
 }

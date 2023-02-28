@@ -10,7 +10,7 @@ import java.util.Optional;
  * different kinds of entities that exist.
  */
 public final class Obstacle implements Scheduable{
-    private EntityKind kind;
+
     private String id;
     private Point position;
     private List<PImage> images;
@@ -30,7 +30,7 @@ public final class Obstacle implements Scheduable{
 
 
     public Obstacle(String id, Point position, List<PImage> images, int resourceLimit, int resourceCount, double actionPeriod, double animationPeriod, int health, int healthLimit) {
-        this.setKind(kind);
+
         this.setId(id);
         this.setPosition(position);
         this.setImages(images);
@@ -39,7 +39,7 @@ public final class Obstacle implements Scheduable{
         this.resourceCount = resourceCount;
         this.actionPeriod = actionPeriod;
         this.animationPeriod = animationPeriod;
-        this.setHealth(health);
+
         this.healthLimit = healthLimit;
     }
 
@@ -48,10 +48,6 @@ public final class Obstacle implements Scheduable{
     /**
      * Helper method for testing. Preserve this functionality while refactoring.
      */
-    public String log(){
-        return this.getId().isEmpty() ? null :
-                String.format("%s %d %d %d", this.getId(), this.getPosition().getX(), this.getPosition().getY(), this.getImageIndex());
-    }
 
     public double getAnimationPeriod() {
         return this.animationPeriod;
@@ -63,6 +59,9 @@ public final class Obstacle implements Scheduable{
 
     public Action createAnimationAction(int repeatCount) {
         return new Animation( this, repeatCount);
+    }
+    public PImage getCurrentImage() {
+        return getImages().get(this.getImageIndex() % this.getImages().size());
     }
 
 
@@ -79,22 +78,12 @@ public final class Obstacle implements Scheduable{
 
     public void setPosition(Point position) { this.position = position; }
 
-    public void setKind(EntityKind kind) { this.kind = kind; }
-
     public String getId() {
         return id;
     }
 
     public void setId(String id) {
         this.id = id;
-    }
-
-    public int getHealth() {
-        return health;
-    }
-
-    public void setHealth(int health) {
-        this.health = health;
     }
 
     public List<PImage> getImages() {

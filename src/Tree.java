@@ -6,8 +6,7 @@ import processing.core.PImage;
  * An entity that exists in the world. See EntityKind for the
  * different kinds of entities that exist.
  */
-public final class Tree implements Actionable {
-    private EntityKind kind;
+public final class Tree implements Actionable,Scheduable,Plant {
     private String id;
     private Point position;
     private List<PImage> images;
@@ -46,10 +45,6 @@ public final class Tree implements Actionable {
     /**
      * Helper method for testing. Preserve this functionality while refactoring.
      */
-    public String log(){
-        return this.getId().isEmpty() ? null :
-                String.format("%s %d %d %d", this.getId(), this.getPosition().getX(), this.getPosition().getY(), this.getImageIndex());
-    }
 
     public double getAnimationPeriod() {
         return this.animationPeriod;
@@ -95,6 +90,9 @@ public final class Tree implements Actionable {
     public Action createActivityAction(WorldModel world, ImageStore imageStore) {
         return new Activity(this, world, imageStore);
     }
+    public PImage getCurrentImage() {
+        return getImages().get(this.getImageIndex() % this.getImages().size());
+    }
 
 
     /*----------------------------------Getters ands Setters------------------------------------------------------------
@@ -109,8 +107,6 @@ public final class Tree implements Actionable {
     public Point getPosition() { return position; }
 
     public void setPosition(Point position) { this.position = position; }
-
-    public void setKind(EntityKind kind) { this.kind = kind; }
 
     public String getId() {
         return id;

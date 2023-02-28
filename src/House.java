@@ -10,7 +10,6 @@ import java.util.Optional;
  * different kinds of entities that exist.
  */
 public final class House implements Entity{
-    private EntityKind kind;
     private String id;
     private Point position;
     private List<PImage> images;
@@ -22,17 +21,6 @@ public final class House implements Entity{
     private int health;
     private int healthLimit;
 
-    /*-----------------------Keys---------------------------------------*/
-
-    private static final double SAPLING_ACTION_ANIMATION_PERIOD = 1.000; // have to be in sync since grows and gains health at same time
-    private static final int SAPLING_HEALTH_LIMIT = 5;
-
-    private static final double TREE_ANIMATION_MAX = 0.600;
-    private static final double TREE_ANIMATION_MIN = 0.050;
-    private static final double TREE_ACTION_MAX = 1.400;
-    private static final double TREE_ACTION_MIN = 1.000;
-    private static final int TREE_HEALTH_MAX = 3;
-    private static final int TREE_HEALTH_MIN = 1;
 
 
     public static House createHouse(String id, Point position, List<PImage> images) {
@@ -49,7 +37,7 @@ public final class House implements Entity{
         this.resourceCount = resourceCount;
         this.actionPeriod = actionPeriod;
         this.animationPeriod = animationPeriod;
-        this.setHealth(health);
+
         this.healthLimit = healthLimit;
     }
 
@@ -58,10 +46,6 @@ public final class House implements Entity{
     /**
      * Helper method for testing. Preserve this functionality while refactoring.
      */
-    public String log(){
-        return this.getId().isEmpty() ? null :
-                String.format("%s %d %d %d", this.getId(), this.getPosition().getX(), this.getPosition().getY(), this.getImageIndex());
-    }
 
     public double getAnimationPeriod() {
         throw new UnsupportedOperationException(String.format("getAnimationPeriod not supported for %s", this.getClass()));
@@ -71,13 +55,8 @@ public final class House implements Entity{
         throw new UnsupportedOperationException(String.format("scheduleActions not supported for %s", this.getClass()));
     }
 
-
-    public Action createAnimationAction(int repeatCount) {
-        return new Animation( this, repeatCount);
-    }
-
-    public Action createActivityAction(WorldModel world, ImageStore imageStore) {
-        return new Activity(this, world, imageStore);
+    public PImage getCurrentImage() {
+        return getImages().get(this.getImageIndex() % this.getImages().size());
     }
 
 
@@ -94,22 +73,12 @@ public final class House implements Entity{
 
     public void setPosition(Point position) { this.position = position; }
 
-    public void setKind(EntityKind kind) { this.kind = kind; }
-
     public String getId() {
         return id;
     }
 
     public void setId(String id) {
         this.id = id;
-    }
-
-    public int getHealth() {
-        return health;
-    }
-
-    public void setHealth(int health) {
-        this.health = health;
     }
 
     public List<PImage> getImages() {

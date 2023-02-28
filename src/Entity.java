@@ -6,21 +6,23 @@ import java.util.Optional;
 public interface Entity {
 
 
-    String log();
+    default String log()
+    {
+        return this.getId().isEmpty() ? null :
+                String.format("%s %d %d %d", this.getId(), this.getPosition().getX(), this.getPosition().getY(), this.getImageIndex());
+    }
     Point getPosition();
     void setPosition(Point position);
     String getId();
     int getImageIndex();
 
+    PImage getCurrentImage();
 
 
 
-    //plant interface
-    int getHealth();
-    public void setHealth(int health);
 
 
-    default Optional<Entity> nearestEntity(List<Entity> entities, Point pos) {
+    static Optional<Entity> nearestEntity(List<Entity> entities, Point pos) {
         if (entities.isEmpty()) {
             return Optional.empty();
         } else {
