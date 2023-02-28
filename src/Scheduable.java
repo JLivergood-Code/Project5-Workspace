@@ -1,7 +1,13 @@
 public interface Scheduable extends Entity{
 
-    void scheduleActions(EventScheduler scheduler, WorldModel world, ImageStore imageStore);
+    default void scheduleActions(EventScheduler scheduler, WorldModel world, ImageStore imageStore)
+    {
+        scheduler.scheduleEvent(this, createAnimationAction(0), this.getAnimationPeriod());
+    }
     double getAnimationPeriod();
     void nextImage();
-    Action createAnimationAction(int repeatCount);
+    default Action createAnimationAction(int repeatCount)
+    {
+        return new Animation( this, repeatCount);
+    }
 }

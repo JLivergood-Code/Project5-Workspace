@@ -80,10 +80,15 @@ public final class VirtualWorld extends PApplet {
 
     public void scheduleActions(WorldModel world, EventScheduler scheduler, ImageStore imageStore) {
         for (Entity entity : world.getEntities()) {
-            if(entity instanceof Scheduable)
+            if(entity instanceof Actionable)
             {
-                Scheduable s = (Scheduable) entity;
-                s.scheduleActions(scheduler, world, imageStore);
+                Actionable a = (Actionable) entity;
+                a.scheduleActions(scheduler, world, imageStore);
+            }
+
+            else if (entity instanceof Scheduable) {
+                Scheduable a = (Scheduable) entity;
+                a.scheduleActions(scheduler, world, imageStore);
             }
         }
     }

@@ -6,17 +6,15 @@ import processing.core.PImage;
  * An entity that exists in the world. See EntityKind for the
  * different kinds of entities that exist.
  */
-public final class Sapling implements Actionable, Scheduable, Plant{
-    private String id;
+public final class Sapling implements Plant{
+    private final String id;
     private Point position;
-    private List<PImage> images;
+    private final List<PImage> images;
     private int imageIndex;
-    private int resourceLimit;
-    private int resourceCount;
-    private double actionPeriod;
-    private double animationPeriod;
+    private final double actionPeriod;
+    private final double animationPeriod;
     private int health;
-    private int healthLimit;
+    private final int healthLimit;
 
     /*-----------------------Keys---------------------------------------*/
 
@@ -34,64 +32,35 @@ public final class Sapling implements Actionable, Scheduable, Plant{
     //static
     // health starts at 0 and builds up until ready to convert to Tree
     public static Sapling createSapling(String id, Point position, List<PImage> images, int health) {
-        return new Sapling(id, position, images, 0, 0, SAPLING_ACTION_ANIMATION_PERIOD, SAPLING_ACTION_ANIMATION_PERIOD, 0, SAPLING_HEALTH_LIMIT);
+        return new Sapling(id, position, images,  SAPLING_ACTION_ANIMATION_PERIOD, SAPLING_ACTION_ANIMATION_PERIOD, SAPLING_HEALTH_LIMIT);
     }
 
 
-    public Sapling(String id, Point position, List<PImage> images, int resourceLimit, int resourceCount, double actionPeriod, double animationPeriod, int health, int healthLimit) {
-        this.setId(id);
+    public Sapling(String id, Point position, List<PImage> images, double actionPeriod, double animationPeriod, int healthLimit) {
+        this.id = id;
         this.setPosition(position);
-        this.setImages(images);
-        this.setImageIndex(0);
-        this.resourceLimit = resourceLimit;
-        this.resourceCount = resourceCount;
+        this.images = images;
+        this.imageIndex = 0;
         this.actionPeriod = actionPeriod;
         this.animationPeriod = animationPeriod;
-        this.setHealth(health);
         this.healthLimit = healthLimit;
-    }
-
-
-
-    /**
-     * Helper method for testing. Preserve this functionality while refactoring.
-     */
-    public String log(){
-        return this.getId().isEmpty() ? null :
-                String.format("%s %d %d %d", this.getId(), this.getPosition().getX(), this.getPosition().getY(), this.getImageIndex());
     }
 
     public double getAnimationPeriod() {
         return this.animationPeriod;
     }
+    public double getActionPeriod() {
+        return this.actionPeriod;
+    }
 
     public void executeActivity(WorldModel world, ImageStore imageStore, EventScheduler scheduler) {
         this.health = (this.health + 1);
-        if (!this.transformPlant(world, scheduler, imageStore)) {
-            scheduler.scheduleEvent(this, createActivityAction(world, imageStore), this.actionPeriod);
-        }
-    }
-    public void scheduleActions(EventScheduler scheduler, WorldModel world, ImageStore imageStore) {
-
-            scheduler.scheduleEvent( this, this.createActivityAction(world, imageStore), this.actionPeriod);
-            scheduler.scheduleEvent( this, createAnimationAction(0), this.getAnimationPeriod());
+        Plant.super.executeActivity(world, imageStore, scheduler);
     }
 
-    public boolean transformPlant(WorldModel world, EventScheduler scheduler, ImageStore imageStore) {
+    public boolean transform(WorldModel world, EventScheduler scheduler, ImageStore imageStore) {
 
-        return transformSapling(world, scheduler, imageStore);
-    }
-
-    public boolean transformSapling(WorldModel world, EventScheduler scheduler, ImageStore imageStore) {
-        if (this.getHealth() <= 0) {
-            Stump stump = Stump.createStump(WorldModel.getStumpKey() + "_" + this.id, this.position, imageStore.getImageList(WorldModel.getStumpKey()));
-
-            world.removeEntity(scheduler, this);
-
-            world.addEntity(stump);
-
-            return true;
-        } else if (this.health >= this.healthLimit) {
+        if (!Plant.super.transform(world, scheduler, imageStore) && this.health >= this.healthLimit) {
             Tree tree = Tree.createTree(WorldModel.getTreeKey() + "_" + this.id, this.position, Functions.getNumFromRange(TREE_ACTION_MAX, TREE_ACTION_MIN), Functions.getNumFromRange(TREE_ANIMATION_MAX, TREE_ANIMATION_MIN), Functions.getIntFromRange(TREE_HEALTH_MAX, TREE_HEALTH_MIN), imageStore.getImageList(WorldModel.getTreeKey()));
 
             world.removeEntity(scheduler, this);
@@ -126,7 +95,7 @@ public final class Sapling implements Actionable, Scheduable, Plant{
      */
 
     public void nextImage() {
-        this.setImageIndex(this.getImageIndex() + 1);
+        this.imageIndex = this.getImageIndex() + 1;
     }
 
 
@@ -136,10 +105,6 @@ public final class Sapling implements Actionable, Scheduable, Plant{
 
     public String getId() {
         return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
     }
 
     public int getHealth() {
@@ -154,15 +119,9 @@ public final class Sapling implements Actionable, Scheduable, Plant{
         return images;
     }
 
-    public void setImages(List<PImage> images) {
-        this.images = images;
-    }
 
     public int getImageIndex() {
         return imageIndex;
     }
 
-    public void setImageIndex(int imageIndex) {
-        this.imageIndex = imageIndex;
-    }
 }

@@ -16,10 +16,10 @@ public interface Entity {
     String getId();
     int getImageIndex();
 
-    PImage getCurrentImage();
-
-
-
+    default PImage getCurrentImage() {
+        return getImages().get(this.getImageIndex() % this.getImages().size());
+    }
+    List<PImage> getImages();
 
 
     static Optional<Entity> nearestEntity(List<Entity> entities, Point pos) {
