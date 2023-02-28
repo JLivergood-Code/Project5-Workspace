@@ -52,7 +52,7 @@ public final class DudeFull implements  Movable {
         Optional<Entity> fullTarget = world.findNearest(this.getPosition(), new ArrayList<>(List.of(House.class)));
 
         if (fullTarget.isPresent() && this.moveTo(world, fullTarget.get(), scheduler)) {
-            this.transform(world, scheduler, imageStore);
+            this.transformFull(world, scheduler, imageStore);
         } else {
             scheduler.scheduleEvent(this, this.createActivityAction(world, imageStore), this.actionPeriod);
         }
@@ -63,7 +63,7 @@ public final class DudeFull implements  Movable {
     @Override
     public void moveHelper(WorldModel world, Entity target, EventScheduler scheduler) {}
 
-    public void transform(WorldModel world, EventScheduler scheduler, ImageStore imageStore) {
+    public void transformFull(WorldModel world, EventScheduler scheduler, ImageStore imageStore) {
         Movable dude = DudeNotFull.createDudeNotFull(this.getId(), this.position, this.actionPeriod, this.animationPeriod, this.resourceLimit, this.getImages());
 
         Movable.super.transform(dude, world, scheduler, imageStore);

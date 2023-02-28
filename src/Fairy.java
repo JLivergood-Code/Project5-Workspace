@@ -29,12 +29,7 @@ public final class Fairy implements Movable {
         this.animationPeriod = animationPeriod;
     }
 
-
-
-    /**
-     * Helper method for testing. Preserve this functionality while refactoring.
-     */
-
+    //Actionable Methods
     public double getAnimationPeriod() {
         return this.animationPeriod;
     }
@@ -42,7 +37,6 @@ public final class Fairy implements Movable {
         return this.actionPeriod;
     }
 
-    //Entity
     public void executeActivity(WorldModel world, ImageStore imageStore, EventScheduler scheduler) {
         Optional<Entity> fairyTarget = world.findNearest(this.getPosition(), new ArrayList<>(List.of(Stump.class)));
 
@@ -61,39 +55,33 @@ public final class Fairy implements Movable {
         scheduler.scheduleEvent(this, createActivityAction(world, imageStore), this.actionPeriod);
     }
 
+    //Movable Methods
     public void moveHelper(WorldModel world, Entity target, EventScheduler scheduler)
     {
         world.removeEntity(scheduler, target);
     }
 
+
+    //Entity Functions
     public PImage getCurrentImage() {
         return getImages().get(this.getImageIndex() % this.getImages().size());
     }
-
-
-    /*----------------------------------Getters ands Setters------------------------------------------------------------
-    --------------------------------------------------------------------------------------------------------------------
-     */
 
     public void nextImage() {
         this.imageIndex = this.getImageIndex() + 1;;
     }
 
-
     public Point getPosition() { return position; }
 
     public void setPosition(Point position) { this.position = position; }
-
 
     public String getId() {
         return id;
     }
 
-
     public List<PImage> getImages() {
         return images;
     }
-
 
     public int getImageIndex() {
         return imageIndex;
