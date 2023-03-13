@@ -40,8 +40,8 @@ public class AStarTests
     private static final int TILE_SIZE = 32;
 
     private static GridValues[][] grid;
-    private static final int ROWS = 9;
-    private static final int COLS = 9;
+    private static final int ROWS = 10;
+    private static final int COLS = 10;
 
     private static enum GridValues { BACKGROUND, OBSTACLE, GOAL};
 
@@ -132,6 +132,46 @@ public class AStarTests
 
         Point[] expected = new Point[] {new Point(0, 1)};
         assertArrayEquals(expected, path.toArray());
+    }
+
+    @Test(timeout = 500)
+    public void test01_computePath02()
+    {
+        initialize_grid();
+        List<Point> path =
+                strategy.computePath(new Point(0, 0),
+                        new Point(7, 7),
+                        p ->  withinBounds(p, grid) && grid[getY(p)][getX(p)] != GridValues.OBSTACLE,
+                        (p1, p2) -> neighbors(p1,p2),
+                        PathingStrategy.CARDINAL_NEIGHBORS);
+
+        assertEquals(path.size(), 13);
+    }
+
+    @Test(timeout = 500)
+    public void test01_computePath03()
+    {
+        initialize_grid();
+
+        grid[0][4] = GridValues.OBSTACLE;
+        grid[6][6] = GridValues.OBSTACLE;
+        grid[6][7] = GridValues.OBSTACLE;
+        grid[6][8] = GridValues.OBSTACLE;
+        grid[7][6] = GridValues.OBSTACLE;
+        grid[8][6] = GridValues.OBSTACLE;
+        grid[7][8] = GridValues.OBSTACLE;
+        grid[9][6] = GridValues.OBSTACLE;
+
+        List<Point> path =
+                strategy.computePath(new Point(0, 0),
+                        new Point(7, 7),
+                        p ->  withinBounds(p, grid) && grid[getY(p)][getX(p)] != GridValues.OBSTACLE,
+                        (p1, p2) -> neighbors(p1,p2),
+                        PathingStrategy.CARDINAL_NEIGHBORS);
+
+        Point[] expected = new Point[] {new Point(0, 1)};
+
+        assertEquals(path.size(), 21);
     }
 
 }

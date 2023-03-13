@@ -19,10 +19,10 @@ public final class WorldView {
     }
 
     public void shiftView(int colDelta, int rowDelta) {
-        int newCol = Functions.clamp(this.getViewport().getCol() + colDelta, 0, this.world.getNumCols() - this.getViewport().getNumCols());
-        int newRow = Functions.clamp(this.getViewport().getRow() + rowDelta, 0, this.world.getNumRows() - this.getViewport().getNumCols());
+        int newCol = Functions.clamp(this.viewport.getCol() + colDelta, 0, this.world.getNumCols() - this.viewport.getNumCols());
+        int newRow = Functions.clamp(this.viewport.getRow() + rowDelta, 0, this.world.getNumRows() - this.viewport.getNumRows());
 
-        this.getViewport().shift(newCol, newRow);
+        this.viewport.shift(newCol, newRow);
     }
 
     public void drawBackground() {

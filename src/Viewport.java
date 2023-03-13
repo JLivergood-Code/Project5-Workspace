@@ -5,21 +5,21 @@ public final class Viewport {
     private int numCols;
 
     public Viewport(int numRows, int numCols) {
-        this.setNumRows(numRows);
-        this.setNumCols(numCols);
+        this.numRows = numRows;
+        this.numCols = numCols;
     }
 
     public Point worldToViewport(int col, int row) {
-        return new Point(col - this.getCol(), row - this.getRow());
+        return new Point(col - this.col, row - this.row);
     }
 
     public  Point viewportToWorld(int col, int row) {
-        return new Point(col + this.getCol(), row + this.getRow());
+        return new Point(col + this.col, row + this.row);
     }
 
     public void shift(int col, int row) {
-        this.setCol(col);
-        this.setRow(row);
+        this.col = col;
+        this.row = row;
     }
 
     public boolean contains( Point p) {
@@ -30,16 +30,8 @@ public final class Viewport {
         return row;
     }
 
-    public void setRow(int row) {
-        this.row = row;
-    }
-
     public int getCol() {
         return col;
-    }
-
-    public void setCol(int col) {
-        this.col = col;
     }
 
     public int getNumRows() {

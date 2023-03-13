@@ -49,7 +49,7 @@ class AStarPathingStrategy
                 }
                 if(!closed.contains(neighbor) && withinReach.test(curNode.pos, neighbor))
                 {
-                    Node neighborNode = new Node(neighbor, curNode, curNode.g+1, Point.distanceSquared(neighbor, end));
+                    Node neighborNode = new Node(neighbor, curNode, curNode.g+1, Point.manhattanDistance(neighbor, end));
 
                     //if current node is in the openSet, compare the g value inside of
                     if(openSet.containsKey(neighbor))

@@ -37,6 +37,13 @@ public final class Point {
         return (p1.getX() == p2.getX() && Math.abs(p1.getY() - p2.getY()) == 1) || (p1.getY() == p2.getY() && Math.abs(p1.getX() - p2.getX()) == 1);
     }
 
+    //Manhattan Distance
+    static int manhattanDistance(Point p1, Point p2)
+    {
+        return Math.abs(p1.getX() - p2.getX()) + Math.abs(p1.getY() - p2.getY());
+    }
+
+    //Euclidean Distance
     static int distanceSquared(Point p1, Point p2) {
         int deltaX = p1.getX() - p2.getX();
         int deltaY = p1.getY() - p2.getY();
