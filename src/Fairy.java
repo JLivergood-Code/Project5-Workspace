@@ -61,7 +61,10 @@ public final class Fairy implements Movable {
         world.removeEntity(scheduler, target);
     }
 
-
+    public boolean posHelper(WorldModel world, Point newPos)
+    {
+        return false;
+    }
     //Entity Functions
     public PImage getCurrentImage() {
         return getImages().get(this.getImageIndex() % this.getImages().size());

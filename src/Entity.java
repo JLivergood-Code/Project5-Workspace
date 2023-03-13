@@ -27,10 +27,10 @@ public interface Entity {
             return Optional.empty();
         } else {
             Entity nearest = entities.get(0);
-            int nearestDistance = Functions.distanceSquared(nearest.getPosition(), pos);
+            int nearestDistance = Point.distanceSquared(nearest.getPosition(), pos);
 
             for (Entity other : entities) {
-                int otherDistance = Functions.distanceSquared(other.getPosition(), pos);
+                int otherDistance = Point.distanceSquared(other.getPosition(), pos);
 
                 if (otherDistance < nearestDistance) {
                     nearest = other;

@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+
 public class WorldTests {
     public static String makeSave(int rows, int cols, String... entities) {
         StringBuilder sb = new StringBuilder(String.format("Rows:\n%d\nCols:\n%d\nEntities:\n", rows, cols));

@@ -72,6 +72,12 @@ public final class DudeNotFull implements Movable {
         return false;
     }
 
+    public boolean posHelper(WorldModel world, Point newPos)
+    {
+
+            return world.getOccupancyCell(newPos).getClass() == Stump.class;
+
+    }
 
     public void moveHelper(WorldModel world, Entity target, EventScheduler scheduler) {
         if(target instanceof Plant) {

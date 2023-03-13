@@ -58,7 +58,12 @@ public final class DudeFull implements  Movable {
         }
     }
 
+    public boolean posHelper(WorldModel world, Point newPos)
+    {
 
+            return world.getOccupancyCell(newPos).getClass() == Stump.class;
+
+    }
 
     @Override
     public void moveHelper(WorldModel world, Entity target, EventScheduler scheduler) {}
