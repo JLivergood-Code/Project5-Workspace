@@ -15,6 +15,8 @@ public final class DudeFull implements  Movable {
     private final double actionPeriod;
     private final double animationPeriod;
 
+    public static double DUDE_ACTION_VALUE = 0.787;
+    public static double DUDE_ANIMATION_VALUE = 0.180;
 
     /*-----------------------Keys---------------------------------------*/
 
