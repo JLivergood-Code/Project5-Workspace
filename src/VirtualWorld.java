@@ -73,13 +73,12 @@ public final class VirtualWorld extends PApplet {
         {
             for (int col = 0; col < TILE_WIDTH; col++)
             {
-                if (Math.sqrt(Math.pow(col - pressed.getX(), 2) + Math.pow(row - pressed.getY(), 2)) < 2
-                        && Math.sqrt(Math.pow(col - pressed.getX(), 2) + Math.pow(row - pressed.getY(), 2)) > 0)
+                Point current = new Point(col, row);
+                if (Point.distanceSquared(current, pressed) < 8)
                 {
-                    Point current = new Point(col, row);
                     world.setBackgroundCell(current, new Background("dirt", imageStore.getImageList("dirt")));
 
-                    if (Point.adjacent(current, pressed))
+                    if (Point.adjacent(current, pressed) && !world.isOccupied(current))
                     {
                         Fairy newFairy = Fairy.createFairy("Fairy", current, world.FAIRY_ACTION_PERIOD, world.FAIRY_ANIMATION_PERIOD, imageStore.getImageList("fairy"));
                         world.addEntity(newFairy);
