@@ -69,9 +69,9 @@ public final class VirtualWorld extends PApplet {
     public void mousePressed() {
         Point pressed = mouseToPoint();
 
-        for (int row = 0; row < TILE_HEIGHT; row++)
+        for (int row = Math.max(pressed.getY() - 10, 0); row < Math.min(pressed.getY() + 10, VIEW_ROWS); row++)
         {
-            for (int col = 0; col < TILE_WIDTH; col++)
+            for (int col = Math.max(pressed.getX() - 10, 0); col < Math.min(pressed.getX() + 10, VIEW_COLS); col++)
             {
                 Point current = new Point(col, row);
 
