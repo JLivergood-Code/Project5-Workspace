@@ -52,11 +52,13 @@ public final class DudeFull implements  Movable {
     //Entity
     public void executeActivity(WorldModel world, ImageStore imageStore, EventScheduler scheduler) {
         Optional<Entity> fullTarget = world.findNearest(this.getPosition(), new ArrayList<>(List.of(House.class)));
+        if (!this.skeletonTransform(world, scheduler, imageStore)) {
 
-        if (fullTarget.isPresent() && this.moveTo(world, fullTarget.get(), scheduler)) {
-            this.transformFull(world, scheduler, imageStore);
-        } else {
-            scheduler.scheduleEvent(this, this.createActivityAction(world, imageStore), this.actionPeriod);
+            if (fullTarget.isPresent() && this.moveTo(world, fullTarget.get(), scheduler)) {
+                this.transformFull(world, scheduler, imageStore);
+            } else {
+                scheduler.scheduleEvent(this, this.createActivityAction(world, imageStore), this.actionPeriod);
+            }
         }
     }
 
@@ -72,11 +74,24 @@ public final class DudeFull implements  Movable {
 
     public void transformFull(WorldModel world, EventScheduler scheduler, ImageStore imageStore) {
         Movable dude = DudeNotFull.createDudeNotFull(this.getId(), this.position, this.actionPeriod, this.animationPeriod, this.resourceLimit, this.getImages());
-
         Movable.super.transform(dude, world, scheduler, imageStore);
     }
 
+    public boolean skeletonTransform(WorldModel world, EventScheduler scheduler, ImageStore imageStore)
+    {
+        Optional<Entity> target = world.findNearest(this.getPosition(), new ArrayList<>(Arrays.asList(Skeleton.class)));
+        if (target.isPresent() && Point.adjacent(target.get().getPosition(), this.position))
+        {
+            Skeleton newSkeleton = Skeleton.createSkeleton("skeleton", this.position, 0.5, 0.5, imageStore.getImageList("skeleton"), 1);
 
+            world.removeEntity(scheduler, this);
+
+            world.addEntity(newSkeleton);
+            newSkeleton.scheduleActions(scheduler, world, imageStore);
+            return true;
+        }
+        return false;
+    }
 
 
     public Action createAnimationAction(int repeatCount) {

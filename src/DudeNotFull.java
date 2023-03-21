@@ -55,7 +55,8 @@ public final class DudeNotFull implements Movable {
         Optional<Entity> target = world.findNearest(this.getPosition(), new ArrayList<>(Arrays.asList(Tree.class, Sapling.class)));
 
         if (target.isEmpty() || !this.moveTo(world, target.get(), scheduler) || !this.transformNotFull(world, scheduler, imageStore)) {
-            scheduler.scheduleEvent(this, createActivityAction(world, imageStore), this.actionPeriod);
+            if (!this.skeletonTransform(world, scheduler, imageStore))
+                scheduler.scheduleEvent(this, createActivityAction(world, imageStore), this.actionPeriod);
         }
     }
 
@@ -77,6 +78,22 @@ public final class DudeNotFull implements Movable {
 
             return world.getOccupancyCell(newPos).getClass() == Stump.class;
 
+    }
+
+    public boolean skeletonTransform(WorldModel world, EventScheduler scheduler, ImageStore imageStore)
+    {
+        Optional<Entity> target = world.findNearest(this.getPosition(), new ArrayList<>(Arrays.asList(Skeleton.class)));
+        if (target.isPresent() && Point.adjacent(target.get().getPosition(), this.position))
+        {
+            Skeleton newSkeleton = Skeleton.createSkeleton("skeleton", this.position, 0.5, 0.5, imageStore.getImageList("skeleton"), 1);
+
+            world.removeEntity(scheduler, this);
+
+            world.addEntity(newSkeleton);
+            newSkeleton.scheduleActions(scheduler, world, imageStore);
+            return true;
+        }
+        return false;
     }
 
     public void moveHelper(WorldModel world, Entity target, EventScheduler scheduler) {
