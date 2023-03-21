@@ -53,21 +53,23 @@ public class Hero implements Movable{
         if (target.isPresent()) {
             Point tgtPos = target.get().getPosition();
 
-            if (this.moveTo(world, target.get(), scheduler)) {
+            //if the hero has moved next to the dude
+            if (this.moveTo(world, target.get(), scheduler) && Point.adjacent(this.getPosition(), tgtPos)) {
 
-                Sapling sapling = Sapling.createSapling(WorldModel.getSaplingKey() + "_" + target.get().getId(), tgtPos, imageStore.getImageList(WorldModel.getSaplingKey()), 0);
-
-                world.addEntity(sapling);
-                sapling.scheduleActions(scheduler, world, imageStore);
+                Entity skeleTarget = target.get();
+                if(skeleTarget instanceof Skeleton)
+                {
+                    Skeleton s = (Skeleton) skeleTarget;
+                    //s.transform(); transforms the skeleton
+                }
             }
         }
     }
 
     public boolean posHelper(WorldModel world, Point newPos)
     {
-
+        //heros can move over stumps
         return world.getOccupancyCell(newPos).getClass() == Stump.class;
-
     }
 
     @Override

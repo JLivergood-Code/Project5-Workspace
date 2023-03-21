@@ -12,6 +12,9 @@ public final class VirtualWorld extends PApplet {
     private static final int TILE_WIDTH = 32;
     private static final int TILE_HEIGHT = 32;
 
+    private static final int NUM_COLS = 40;
+    private static final int NUM_ROWS = 30;
+
     private static final int VIEW_COLS = VIEW_WIDTH / TILE_WIDTH;
     private static final int VIEW_ROWS = VIEW_HEIGHT / TILE_HEIGHT;
 
@@ -69,9 +72,9 @@ public final class VirtualWorld extends PApplet {
     public void mousePressed() {
         Point pressed = mouseToPoint();
 
-        for (int row = Math.max(pressed.getY() - 10, 0); row < Math.min(pressed.getY() + 10, VIEW_ROWS); row++)
+        for (int row = Math.max(pressed.getY() - 10, 0); row < Math.min(pressed.getY() + 10, NUM_ROWS); row++)
         {
-            for (int col = Math.max(pressed.getX() - 10, 0); col < Math.min(pressed.getX() + 10, VIEW_COLS); col++)
+            for (int col = Math.max(pressed.getX() - 10, 0); col < Math.min(pressed.getX() + 10, NUM_COLS); col++)
             {
                 Point current = new Point(col, row);
 
