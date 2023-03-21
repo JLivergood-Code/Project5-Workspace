@@ -68,12 +68,34 @@ public final class VirtualWorld extends PApplet {
     // Be sure to refactor this method as appropriate
     public void mousePressed() {
         Point pressed = mouseToPoint();
-        System.out.println("CLICK! " + pressed.getX() + ", " + pressed.getY());
 
+        for (int row = 0; row < TILE_HEIGHT; row++)
+        {
+            for (int col = 0; col < TILE_WIDTH; col++)
+            {
+                if (Math.sqrt(Math.pow(col - pressed.getX(), 2) + Math.pow(row - pressed.getY(), 2)) < 2
+                        && Math.sqrt(Math.pow(col - pressed.getX(), 2) + Math.pow(row - pressed.getY(), 2)) > 0)
+                {
+                    Point current = new Point(col, row);
+                    world.setBackgroundCell(current, new Background("dirt", imageStore.getImageList("dirt")));
+
+                    if (Point.adjacent(current, pressed))
+                    {
+                        Fairy newFairy = Fairy.createFairy("Fairy", current, world.FAIRY_ACTION_PERIOD, world.FAIRY_ANIMATION_PERIOD, imageStore.getImageList("fairy"));
+                        world.addEntity(newFairy);
+                    }
+                }
+            }
+        }
+        world.setBackgroundCell(pressed, new Background("dirt", imageStore.getImageList("dirt")));
+        System.out.println("CLICK! " + pressed.getX() + ", " + pressed.getY());
         Optional<Entity> entityOptional = world.getOccupant(pressed);
         if (entityOptional.isPresent()) {
             Entity entity = entityOptional.get();
-            System.out.println(entity.getId() + ": " + entity.getClass());
+            if (entity instanceof Plant)
+                System.out.println(entity.getClass() + " : " + ((Plant)entity).getHealth());
+            else
+                System.out.println(entity.getClass());
         }
 
     }

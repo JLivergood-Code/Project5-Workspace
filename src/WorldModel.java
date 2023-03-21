@@ -30,13 +30,13 @@ public final class WorldModel {
     private static final int TREE_NUM_PROPERTIES = 3;
 
 
-    private static final int FAIRY_ANIMATION_PERIOD = 0;
-    private static final int FAIRY_ACTION_PERIOD = 1;
-    private static final int FAIRY_NUM_PROPERTIES = 2;
+    public static final int FAIRY_ANIMATION_PERIOD = 0;
+    public static final int FAIRY_ACTION_PERIOD = 1;
+    public static final int FAIRY_NUM_PROPERTIES = 2;
     private static final String HOUSE_KEY = "house";
 
     private static final String OBSTACLE_KEY = "obstacle";
-    private static final String FAIRY_KEY = "fairy";
+    public static final String FAIRY_KEY = "fairy";
     private static final String DUDE_KEY = "dude";
     private static final int DUDE_ACTION_PERIOD = 0;
     private static final int DUDE_ANIMATION_PERIOD = 1;
