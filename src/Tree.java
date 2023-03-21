@@ -33,6 +33,14 @@ public final class Tree implements Actionable,Plant {
         this.animationPeriod = animationPeriod;
         this.setHealth(health);
     }
+    public void transformDead(WorldModel world, EventScheduler scheduler, ImageStore imageStore) {
+        DeadTree deadTree = DeadTree.createDeadTree(DeadTree.DEADTREE_KEY + "_" + this.getId(), this.getPosition(), Functions.getNumFromRange(Sapling.TREE_ANIMATION_MAX, Sapling.TREE_ANIMATION_MIN),imageStore.getImageList(DeadTree.DEADTREE_KEY));
+
+        world.removeEntity(scheduler, this);
+
+        world.addEntity(deadTree);
+        deadTree.scheduleActions(scheduler, world, imageStore);
+    }
 
 
 

@@ -74,9 +74,17 @@ public final class VirtualWorld extends PApplet {
             for (int col = 0; col < TILE_WIDTH; col++)
             {
                 Point current = new Point(col, row);
+
                 if (Point.distanceSquared(current, pressed) < 8)
                 {
-                    world.setBackgroundCell(current, new Background("dirt", imageStore.getImageList("dirt")));
+                    Optional<Entity> entityOptional = world.getOccupant(current);
+                    if (entityOptional.isPresent()) {
+                        Entity entity = entityOptional.get();
+                        if (entity instanceof Tree) {
+                            ((Tree) entity).transformDead(world,scheduler,imageStore);
+                        }
+                    }
+                    world.setBackgroundCell(current, new Background("deadGrass", imageStore.getImageList("deadGrass")));
 
                     if (Point.adjacent(current, pressed) && !world.isOccupied(current))
                     {
@@ -87,7 +95,7 @@ public final class VirtualWorld extends PApplet {
                 }
             }
         }
-        world.setBackgroundCell(pressed, new Background("dirt", imageStore.getImageList("dirt")));
+        world.setBackgroundCell(pressed, new Background("deadGrass", imageStore.getImageList("deadGrass")));
         System.out.println("CLICK! " + pressed.getX() + ", " + pressed.getY());
         Optional<Entity> entityOptional = world.getOccupant(pressed);
         if (entityOptional.isPresent()) {

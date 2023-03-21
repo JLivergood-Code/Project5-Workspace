@@ -18,8 +18,8 @@ public final class Sapling implements Plant{
 
     /*-----------------------Keys---------------------------------------*/
 
-    private static final double TREE_ANIMATION_MAX = 0.600;
-    private static final double TREE_ANIMATION_MIN = 0.050;
+    public static final double TREE_ANIMATION_MAX = 0.600;
+    public static final double TREE_ANIMATION_MIN = 0.050;
     private static final double TREE_ACTION_MAX = 1.400;
     private static final double TREE_ACTION_MIN = 1.000;
     private static final int TREE_HEALTH_MAX = 3;
