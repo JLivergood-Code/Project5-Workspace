@@ -13,8 +13,8 @@ public class Hero implements Movable{
     private final double actionPeriod;
     private final double animationPeriod;
 
-    public static double DUDE_ACTION_VALUE = 0.787;
-    public static double DUDE_ANIMATION_VALUE = 0.180;
+    public static double HERO_ACTION_VALUE = 0.787;
+    public static double HERO_ANIMATION_VALUE = 0.180;
 
     /*-----------------------Keys---------------------------------------*/
 
@@ -48,10 +48,18 @@ public class Hero implements Movable{
     }
     //Entity
     public void executeActivity(WorldModel world, ImageStore imageStore, EventScheduler scheduler) {
-        Optional<Entity> fullTarget = world.findNearest(this.getPosition(), new ArrayList<>(List.of(Skeleton.class)));
+        Optional<Entity> target = world.findNearest(this.getPosition(), new ArrayList<>(List.of(Skeleton.class)));
 
-        if (fullTarget.isPresent() && this.moveTo(world, fullTarget.get(), scheduler)) {
-            scheduler.scheduleEvent(this, this.createActivityAction(world, imageStore), this.actionPeriod);
+        if (target.isPresent()) {
+            Point tgtPos = target.get().getPosition();
+
+            if (this.moveTo(world, target.get(), scheduler)) {
+
+                Sapling sapling = Sapling.createSapling(WorldModel.getSaplingKey() + "_" + target.get().getId(), tgtPos, imageStore.getImageList(WorldModel.getSaplingKey()), 0);
+
+                world.addEntity(sapling);
+                sapling.scheduleActions(scheduler, world, imageStore);
+            }
         }
     }
 
@@ -64,9 +72,6 @@ public class Hero implements Movable{
 
     @Override
     public void moveHelper(WorldModel world, Entity target, EventScheduler scheduler) {}
-
-
-
 
     public Action createAnimationAction(int repeatCount) {
         return new Animation( this, repeatCount);

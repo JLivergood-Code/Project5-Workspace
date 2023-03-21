@@ -1,0 +1,2 @@
+-Add hero and skeleton
+-add second world event (Magic world event/heros spawn)
