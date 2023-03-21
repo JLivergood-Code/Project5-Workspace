@@ -69,9 +69,9 @@ public final class VirtualWorld extends PApplet {
     public void mousePressed() {
         Point pressed = mouseToPoint();
 
-        for (int row = 0; row < TILE_HEIGHT; row++)
+        for (int row = pressed.getY() - 10; row < pressed.getY() + 10; row++)
         {
-            for (int col = 0; col < TILE_WIDTH; col++)
+            for (int col = pressed.getX() - 10; col < pressed.getX() + 10; col++)
             {
                 Point current = new Point(col, row);
                 if (Point.distanceSquared(current, pressed) < 8)
@@ -80,8 +80,10 @@ public final class VirtualWorld extends PApplet {
 
                     if (Point.adjacent(current, pressed) && !world.isOccupied(current))
                     {
-                        Fairy newFairy = Fairy.createFairy("Fairy", current, world.FAIRY_ACTION_PERIOD, world.FAIRY_ANIMATION_PERIOD, imageStore.getImageList("fairy"));
+                        Fairy newFairy = Fairy.createFairy("fairy", current, Fairy.FAIRY_ANIMATION_VALUE, Fairy.FAIRY_ANIMATION_VALUE, imageStore.getImageList(WorldModel.FAIRY_KEY));
+
                         world.addEntity(newFairy);
+                        newFairy.scheduleActions(scheduler, world, imageStore);
                     }
                 }
             }
