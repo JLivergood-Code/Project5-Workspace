@@ -21,7 +21,7 @@ public class Skeleton implements Movable {
         this.imageIndex = 0;
         this.actionPeriod = actionPeriod;
         this.animationPeriod = animationPeriod;
-        this.health = 3;
+        this.health = health;
     }
 
     public double getAnimationPeriod() {
@@ -53,18 +53,24 @@ public class Skeleton implements Movable {
 
     public void executeActivity(WorldModel world, ImageStore imageStore, EventScheduler scheduler) {
         Optional<Entity> target = world.findNearest(this.getPosition(), new ArrayList<>(List.of(DudeFull.class, DudeNotFull.class)));
-        if (target.isEmpty() || !this.moveTo(world, target.get(), scheduler))
-        {
+        if (target.isPresent()) {
+            moveTo(world, target.get(), scheduler);
             scheduler.scheduleEvent(this, this.createActivityAction(world, imageStore), this.actionPeriod);
         }
     }
 
     public boolean posHelper(WorldModel world, Point newPos)
     {
-        return world.getOccupancyCell(newPos).getClass() == Stump.class;
+        return false;
     }
 
-    public void moveHelper(WorldModel world, Entity target, EventScheduler scheduler) {}
+    public void moveHelper(WorldModel world, Entity target, EventScheduler scheduler)
+    {
+        if(target instanceof Dude) {
+            Dude dude = (Dude) target;
+            dude.setHealth(dude.getHealth() - 1);
+        }
+    }
 
     public Action createAnimationAction(int repeatCount) {
         return new Animation( this, repeatCount);

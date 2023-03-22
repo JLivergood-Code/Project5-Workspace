@@ -6,7 +6,7 @@ import processing.core.PImage;
  * An entity that exists in the world. See EntityKind for the
  * different kinds of entities that exist.
  */
-public final class DudeFull implements  Movable {
+public final class DudeFull implements Movable, Dude {
     private final String id;
     private Point position;
     private final List<PImage> images;
@@ -15,6 +15,8 @@ public final class DudeFull implements  Movable {
     private final double actionPeriod;
     private final double animationPeriod;
 
+    private int health;
+
     public static double DUDE_ACTION_VALUE = 0.787;
     public static double DUDE_ANIMATION_VALUE = 0.180;
 
@@ -22,12 +24,12 @@ public final class DudeFull implements  Movable {
 
 
     // don't technically need resource count ... full
-    public static DudeFull createDudeFull(String id, Point position, double actionPeriod, double animationPeriod, int resourceLimit, List<PImage> images) {
-        return new DudeFull(id, position, images, resourceLimit, actionPeriod, animationPeriod);
+    public static DudeFull createDudeFull(String id, Point position, double actionPeriod, double animationPeriod, int resourceLimit, List<PImage> images, int health) {
+        return new DudeFull(id, position, images, resourceLimit, actionPeriod, animationPeriod, health);
     }
 
 
-    public DudeFull(String id, Point position, List<PImage> images, int resourceLimit, double actionPeriod, double animationPeriod) {
+    public DudeFull(String id, Point position, List<PImage> images, int resourceLimit, double actionPeriod, double animationPeriod, int health) {
         this.id = id;
         this.setPosition(position);
         this.images = images;
@@ -35,6 +37,7 @@ public final class DudeFull implements  Movable {
         this.resourceLimit = resourceLimit;
         this.actionPeriod = actionPeriod;
         this.animationPeriod = animationPeriod;
+        this.health = health;
     }
 
 
@@ -52,45 +55,22 @@ public final class DudeFull implements  Movable {
     //Entity
     public void executeActivity(WorldModel world, ImageStore imageStore, EventScheduler scheduler) {
         Optional<Entity> fullTarget = world.findNearest(this.getPosition(), new ArrayList<>(List.of(House.class)));
-        if (!this.skeletonTransform(world, scheduler, imageStore)) {
-
-            if (fullTarget.isPresent() && this.moveTo(world, fullTarget.get(), scheduler)) {
-                this.transformFull(world, scheduler, imageStore);
-            } else {
+        if (fullTarget.isPresent() && this.moveTo(world, fullTarget.get(), scheduler)) {
+            this.transformFull(world, scheduler, imageStore);
+        } else {
+            if (!this.transformSkeleton(world, scheduler, imageStore))
+            {
                 scheduler.scheduleEvent(this, this.createActivityAction(world, imageStore), this.actionPeriod);
             }
         }
-    }
-
-    public boolean posHelper(WorldModel world, Point newPos)
-    {
-
-            return world.getOccupancyCell(newPos).getClass() == Stump.class;
-
     }
 
     @Override
     public void moveHelper(WorldModel world, Entity target, EventScheduler scheduler) {}
 
     public void transformFull(WorldModel world, EventScheduler scheduler, ImageStore imageStore) {
-        Movable dude = DudeNotFull.createDudeNotFull(this.getId(), this.position, this.actionPeriod, this.animationPeriod, this.resourceLimit, this.getImages());
-        Movable.super.transform(dude, world, scheduler, imageStore);
-    }
-
-    public boolean skeletonTransform(WorldModel world, EventScheduler scheduler, ImageStore imageStore)
-    {
-        Optional<Entity> target = world.findNearest(this.getPosition(), new ArrayList<>(Arrays.asList(Skeleton.class)));
-        if (target.isPresent() && Point.adjacent(target.get().getPosition(), this.position))
-        {
-            Skeleton newSkeleton = Skeleton.createSkeleton("skeleton", this.position, 0.5, 0.5, imageStore.getImageList("skeleton"), 1);
-
-            world.removeEntity(scheduler, this);
-
-            world.addEntity(newSkeleton);
-            newSkeleton.scheduleActions(scheduler, world, imageStore);
-            return true;
-        }
-        return false;
+        Movable dude = DudeNotFull.createDudeNotFull(this.getId(), this.position, this.actionPeriod, this.animationPeriod, this.resourceLimit, this.getImages(), this.health);
+        Dude.super.transform(dude, world, scheduler, imageStore);
     }
 
 
@@ -126,6 +106,14 @@ public final class DudeFull implements  Movable {
 
     public int getImageIndex() {
         return imageIndex;
+    }
+
+    public int getHealth() {
+        return health;
+    }
+
+    public void setHealth(int health) {
+        this.health = health;
     }
 
 }

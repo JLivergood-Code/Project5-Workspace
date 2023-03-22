@@ -91,7 +91,7 @@ public final class VirtualWorld extends PApplet {
 
                     if (Point.adjacent(current, pressed) && !world.isOccupied(current))
                     {
-                        Skeleton newSkeleton = Skeleton.createSkeleton("skeleton", current, 0.5, 0.5, imageStore.getImageList("skeleton"), 1);
+                        Skeleton newSkeleton = Skeleton.createSkeleton("skeleton", current, 0.5, 0.4, imageStore.getImageList("skeleton"), 1);
                         world.addEntity(newSkeleton);
                         newSkeleton.scheduleActions(scheduler, world, imageStore);
                     }
