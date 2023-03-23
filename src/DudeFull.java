@@ -17,9 +17,6 @@ public final class DudeFull implements Movable, Dude {
 
     private int health;
 
-    public static double DUDE_ACTION_VALUE = 0.787;
-    public static double DUDE_ANIMATION_VALUE = 0.180;
-
     /*-----------------------Keys---------------------------------------*/
 
 

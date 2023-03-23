@@ -38,6 +38,22 @@ public final class VirtualWorld extends PApplet {
     private WorldView view;
     private EventScheduler scheduler;
 
+    private final static double DUDE_ACTION_VALUE = 0.787;
+    private final static double DUDE_ANIMATION_VALUE = 0.180;
+    private final static int DUDE_HEALTH = 3;
+
+    private final static double FAIRY_ACTION_VALUE = 0.123;
+    private final static double FAIRY_ANIMATION_VALUE = 0.123;
+
+    public static final double SKELETON_ACTION_VALUE = 0.5;
+    public final static double SKELETON_ANIMATION_VALUE = 0.4;
+    public final static int SKELETON_HEALTH = 1;
+
+    private final static double HERO_ACTION_VALUE = 0.4;
+    private final static double HERO_ANIMATION_VALUE = 0.3;
+
+
+
     public void settings() {
         size(VIEW_WIDTH, VIEW_HEIGHT);
     }
@@ -93,12 +109,12 @@ private void house_click(Point pressed){
     Point up = new Point(pressed.getX(),pressed.getY()+1);
     Point down = new Point(pressed.getX(),pressed.getY()-1);
     if (world.withinBounds(up) && !world.isOccupied(up)){
-        DudeNotFull dude = DudeNotFull.createDudeNotFull("dude", up, 0.8, 0.2, world.DUDE_LIMIT,imageStore.getImageList("dude"),3);
+        DudeNotFull dude = DudeNotFull.createDudeNotFull("dude", up, DUDE_ACTION_VALUE, DUDE_ANIMATION_VALUE, world.DUDE_LIMIT,imageStore.getImageList("dude"),DUDE_HEALTH);
         world.addEntity(dude);
         dude.scheduleActions(scheduler, world, imageStore);
     }
     if (world.withinBounds(down) && !world.isOccupied(down)){
-        DudeNotFull dude = DudeNotFull.createDudeNotFull("dude", down, 0.8, 0.2, world.DUDE_LIMIT,imageStore.getImageList("dude"),3);
+        DudeNotFull dude = DudeNotFull.createDudeNotFull("dude", down, DUDE_ACTION_VALUE, DUDE_ANIMATION_VALUE, world.DUDE_LIMIT,imageStore.getImageList("dude"),DUDE_HEALTH);
         world.addEntity(dude);
         dude.scheduleActions(scheduler, world, imageStore);
     }
@@ -149,7 +165,7 @@ private void house_click(Point pressed){
                     swap_dead_background(current);
                     if (Point.adjacent(current, pressed) && !world.isOccupied(current))
                     {
-                        Skeleton newSkeleton = Skeleton.createSkeleton("skeleton", current, 0.5, 0.4, imageStore.getImageList("skeleton"), 1);
+                        Skeleton newSkeleton = Skeleton.createSkeleton("skeleton", current, SKELETON_ACTION_VALUE, SKELETON_ANIMATION_VALUE, imageStore.getImageList("skeleton"), SKELETON_HEALTH);
                         world.addEntity(newSkeleton);
                         newSkeleton.scheduleActions(scheduler, world, imageStore);
                     }
@@ -192,12 +208,12 @@ private void house_click(Point pressed){
         Point behind = new Point(pressed.getX() -1, pressed.getY()-1);
         Point infront = new Point(pressed.getX() +1, pressed.getY()+1);
         if (world.withinBounds(behind) && !world.isOccupied(behind)){
-            Fairy fairy = Fairy.createFairy("fairy", behind, 0.75,.25, imageStore.getImageList("fairy"));
+            Fairy fairy = Fairy.createFairy("fairy", behind, FAIRY_ACTION_VALUE,FAIRY_ANIMATION_VALUE, imageStore.getImageList("fairy"));
             world.addEntity(fairy);
             fairy.scheduleActions(scheduler, world, imageStore);
         }
         if (world.withinBounds(infront)&& !world.isOccupied(infront)){
-            Fairy fairy = Fairy.createFairy("fairy", infront, 0.75,.25, imageStore.getImageList("fairy"));
+            Fairy fairy = Fairy.createFairy("fairy", infront, FAIRY_ACTION_VALUE,FAIRY_ANIMATION_VALUE, imageStore.getImageList("fairy"));
             world.addEntity(fairy);
             fairy.scheduleActions(scheduler, world, imageStore);
         }
@@ -230,7 +246,7 @@ private void house_click(Point pressed){
             if (entityO.isPresent()) {
                 Entity pressedEntity = entityO.get();
                 if (pressedEntity instanceof Fairy) {
-                    Hero hero = Hero.createHero("hero", pressed, 0.4, 0.3, imageStore.getImageList("hero"));
+                    Hero hero = Hero.createHero("hero", pressed, HERO_ACTION_VALUE, HERO_ANIMATION_VALUE, imageStore.getImageList("hero"));
                     world.removeEntity(scheduler, pressedEntity);
                     world.addEntity(hero);
                     hero.scheduleActions(scheduler, world, imageStore);

@@ -14,8 +14,6 @@ public final class Fairy implements Movable {
     private final double actionPeriod;
     private final double animationPeriod;
 
-    public static double FAIRY_ACTION_VALUE = 0.123;
-    public static double FAIRY_ANIMATION_VALUE = 0.123;
     //static
     public static Fairy createFairy(String id, Point position, double actionPeriod, double animationPeriod, List<PImage> images) {
         return new Fairy(id, position, images, actionPeriod, animationPeriod);

@@ -7,7 +7,7 @@ public interface Dude extends Movable {
     {
         if (this.getHealth() <= 0) {
             System.out.println("Dude Transformed Into Skeleton!");
-            Skeleton skeleton = Skeleton.createSkeleton("skeleton" + "_" + this.getId(), this.getPosition(), 0.5, 0.4, imageStore.getImageList("skeleton"), 1);
+            Skeleton skeleton = Skeleton.createSkeleton("skeleton" + "_" + this.getId(), this.getPosition(), VirtualWorld.SKELETON_ACTION_VALUE, VirtualWorld.SKELETON_ANIMATION_VALUE, imageStore.getImageList("skeleton"), VirtualWorld.SKELETON_HEALTH);
 
             world.removeEntity(scheduler, this);
 
