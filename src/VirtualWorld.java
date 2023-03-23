@@ -161,6 +161,11 @@ private void house_click(Point pressed){
                         if (entity instanceof Tree) {
                             ((Tree) entity).transformDead(world,scheduler,imageStore);
                         }
+                        else if (entity instanceof Plant)
+                        {
+                            ((Plant) entity).setHealth(0);
+                            ((Plant) entity).transform(world, scheduler, imageStore);
+                        }
                     }
                     swap_dead_background(current);
                     if (Point.adjacent(current, pressed) && !world.isOccupied(current))
@@ -173,6 +178,10 @@ private void house_click(Point pressed){
             }
         }
         swap_dead_background(pressed);
+
+        DeadObelisk obelisk = DeadObelisk.createDeadObelisk("deadObelisk", pressed, 1,imageStore.getImageList("deadObelisk"), 25);
+        world.addEntity(obelisk);
+        obelisk.scheduleActions(scheduler, world, imageStore);
     }
     private void swap_magic_background(Point current){
         if (world.getBackgroundCell(current).getImages().equals(imageStore.getImageList("grass"))||world.getBackgroundCell(current).getImages().equals(imageStore.getImageList("deadGrass"))) {
@@ -200,45 +209,68 @@ private void house_click(Point pressed){
             world.setBackgroundCell(current, new Background("magic_dirt_vert_left", imageStore.getImageList("magic_dirt_vert_left")));
         }
     }
-    private void magicPress(Point pressed){
-        Point corner1 = (new Point(pressed.getX()+3, pressed.getY()+3));
-        Point corner2 = (new Point(pressed.getX()-3, pressed.getY()+3));
-        Point corner3 = (new Point(pressed.getX()+3, pressed.getY()-3));
-        Point corner4 = (new Point(pressed.getX()-3, pressed.getY()-3));
-        Point behind = new Point(pressed.getX() -1, pressed.getY()-1);
-        Point infront = new Point(pressed.getX() +1, pressed.getY()+1);
-        if (world.withinBounds(behind) && !world.isOccupied(behind)){
-            Fairy fairy = Fairy.createFairy("fairy", behind, FAIRY_ACTION_VALUE,FAIRY_ANIMATION_VALUE, imageStore.getImageList("fairy"));
-            world.addEntity(fairy);
-            fairy.scheduleActions(scheduler, world, imageStore);
-        }
-        if (world.withinBounds(infront)&& !world.isOccupied(infront)){
-            Fairy fairy = Fairy.createFairy("fairy", infront, FAIRY_ACTION_VALUE,FAIRY_ANIMATION_VALUE, imageStore.getImageList("fairy"));
-            world.addEntity(fairy);
-            fairy.scheduleActions(scheduler, world, imageStore);
-        }
-        for (int row = Math.max(pressed.getY() - 10, 0); row < Math.min(pressed.getY() + 10, NUM_ROWS); row++) {
-            for (int col = Math.max(pressed.getX() - 10, 0); col < Math.min(pressed.getX() + 10, NUM_COLS); col++) {
-                Point current = new Point(col, row);
+    private void magicPress(Point pressed) {
+        boolean placedObelsik = false;
 
-                if (Point.distanceSquared(current, pressed) < 10 &
-                        (Point.distanceSquared(current, corner1) > 6) &
-                        (Point.distanceSquared(current, corner2) > 6) &
-                        (Point.distanceSquared(current, corner3) > 6) &
-                        (Point.distanceSquared(current, corner4) > 6)) {
-                    Optional<Entity> entityOptional = world.getOccupant(current);
-                    if (entityOptional.isPresent()) {
-                        Entity entity = entityOptional.get();
-                        if (entity instanceof Tree) {
-                            ((Tree) entity).transformMagic(world, scheduler, imageStore);
-                        } else if (entity instanceof Sapling) {
-                            ((Sapling) entity).transformMagic(world, scheduler, imageStore);
-                        } else if (entity instanceof Stump) {
-                            ((Stump) entity).transformMagic(world, scheduler, imageStore);
+        Point corner1 = (new Point(pressed.getX() + 3, pressed.getY() + 3));
+        Point corner2 = (new Point(pressed.getX() - 3, pressed.getY() + 3));
+        Point corner3 = (new Point(pressed.getX() + 3, pressed.getY() - 3));
+        Point corner4 = (new Point(pressed.getX() - 3, pressed.getY() - 3));
+        Point behind = new Point(pressed.getX() - 1, pressed.getY() - 1);
+        Point infront = new Point(pressed.getX() + 1, pressed.getY() + 1);
+        Point botLeft = new Point(pressed.getX() - 1, pressed.getY() + 1);
+
+        if (!placedObelsik && world.withinBounds(behind) && !world.isOccupied(behind)) {
+            MagicObelisk obelisk = MagicObelisk.createMagicObelisk("magicObelisk", behind, 1, imageStore.getImageList("magicObelisk"), 25);
+            world.addEntity(obelisk);
+            obelisk.scheduleActions(scheduler, world, imageStore);
+            placedObelsik = true; }
+
+        else if (world.withinBounds(behind) && !world.isOccupied(behind)) {
+            Fairy fairy = Fairy.createFairy("fairy", behind, 0.123, .123, imageStore.getImageList("fairy"));
+            world.addEntity(fairy);
+            fairy.scheduleActions(scheduler, world, imageStore);
+        }
+        if (!placedObelsik && world.withinBounds(infront) && !world.isOccupied(infront)) {
+            MagicObelisk obelisk = MagicObelisk.createMagicObelisk("magicObelisk", infront, 1, imageStore.getImageList("magicObelisk"), 25);
+            world.addEntity(obelisk);
+            obelisk.scheduleActions(scheduler, world, imageStore);
+            placedObelsik = true; }
+
+        else if (world.withinBounds(infront) && !world.isOccupied(infront)) {
+            Fairy fairy = Fairy.createFairy("fairy", infront, 0.123, .123, imageStore.getImageList("fairy"));
+            world.addEntity(fairy);
+            fairy.scheduleActions(scheduler, world, imageStore);
+        }
+
+        if (world.withinBounds(botLeft) && !world.isOccupied(botLeft)) {
+            Fairy fairy = Fairy.createFairy("fairy", botLeft, 0.123, .123, imageStore.getImageList("fairy"));
+            world.addEntity(fairy);
+            fairy.scheduleActions(scheduler, world, imageStore);
+        }
+
+            for (int row = Math.max(pressed.getY() - 10, 0); row < Math.min(pressed.getY() + 10, NUM_ROWS); row++) {
+                for (int col = Math.max(pressed.getX() - 10, 0); col < Math.min(pressed.getX() + 10, NUM_COLS); col++) {
+                    Point current = new Point(col, row);
+
+                    if (Point.distanceSquared(current, pressed) < 10 &
+                            (Point.distanceSquared(current, corner1) > 6) &
+                            (Point.distanceSquared(current, corner2) > 6) &
+                            (Point.distanceSquared(current, corner3) > 6) &
+                            (Point.distanceSquared(current, corner4) > 6)) {
+                        Optional<Entity> entityOptional = world.getOccupant(current);
+                        if (entityOptional.isPresent()) {
+                            Entity entity = entityOptional.get();
+                            if (entity instanceof Tree) {
+                                ((Tree) entity).transformMagic(world, scheduler, imageStore);
+                            } else if (entity instanceof Sapling) {
+                                ((Sapling) entity).transformMagic(world, scheduler, imageStore);
+                            } else if (entity instanceof Stump) {
+                                ((Stump) entity).transformMagic(world, scheduler, imageStore);
+                            }
                         }
-                    }
 
-                    swap_magic_background(current);
+                        swap_magic_background(current);
 
                 }
             }

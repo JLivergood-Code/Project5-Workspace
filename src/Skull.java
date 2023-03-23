@@ -18,7 +18,7 @@ public final class Skull implements Actionable{
 
     /*-----------------------Keys---------------------------------------*/
 
-    private static final double SKULL_ACTION_ANIMATION_PERIOD = 1.000; // have to be in sync since grows and gains health at same time
+    private static final double SKULL_ACTION_ANIMATION_PERIOD = .100; // have to be in sync since grows and gains health at same time
     private static final int SKULL_HEALTH_LIMIT = 16;
 
 
