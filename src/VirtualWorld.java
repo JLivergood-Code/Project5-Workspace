@@ -80,8 +80,10 @@ public final class VirtualWorld extends PApplet {
             } else if (entity instanceof Fairy) {
                 magicPress(pressed);
             }
-            else if (entity instanceof House){house_click(pressed);
+            else if (entity instanceof House){
+                house_click(pressed);
             }
+            System.out.println(entity.getClass());
         }
         else {
             deadPress(pressed);
@@ -91,13 +93,15 @@ private void house_click(Point pressed){
     Point up = new Point(pressed.getX(),pressed.getY()+1);
     Point down = new Point(pressed.getX(),pressed.getY()-1);
     if (world.withinBounds(up) && !world.isOccupied(up)){
-        DudeNotFull dude = DudeNotFull.createDudeNotFull("dude", up, 0.5, 0.4, world.DUDE_LIMIT,imageStore.getImageList("dude"),3);
+        DudeNotFull dude = DudeNotFull.createDudeNotFull("dude", up, 0.8, 0.2, world.DUDE_LIMIT,imageStore.getImageList("dude"),3);
         world.addEntity(dude);
-        dude.scheduleActions(scheduler, world, imageStore);}
+        dude.scheduleActions(scheduler, world, imageStore);
+    }
     if (world.withinBounds(down) && !world.isOccupied(down)){
-        DudeNotFull dude = DudeNotFull.createDudeNotFull("dude", down, 0.5, 0.4, world.DUDE_LIMIT,imageStore.getImageList("dude"),3);
+        DudeNotFull dude = DudeNotFull.createDudeNotFull("dude", down, 0.8, 0.2, world.DUDE_LIMIT,imageStore.getImageList("dude"),3);
         world.addEntity(dude);
-        dude.scheduleActions(scheduler, world, imageStore);}
+        dude.scheduleActions(scheduler, world, imageStore);
+    }
 }
     private void swap_dead_background(Point current){
         if (world.getBackgroundCell(current).getImages().equals(imageStore.getImageList("grass"))) {
@@ -226,7 +230,7 @@ private void house_click(Point pressed){
             if (entityO.isPresent()) {
                 Entity pressedEntity = entityO.get();
                 if (pressedEntity instanceof Fairy) {
-                    Hero hero = Hero.createHero("hero", pressed, 0.5, 0.4, imageStore.getImageList("hero"));
+                    Hero hero = Hero.createHero("hero", pressed, 0.4, 0.3, imageStore.getImageList("hero"));
                     world.removeEntity(scheduler, pressedEntity);
                     world.addEntity(hero);
                     hero.scheduleActions(scheduler, world, imageStore);

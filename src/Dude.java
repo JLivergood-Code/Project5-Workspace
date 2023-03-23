@@ -6,7 +6,8 @@ public interface Dude extends Movable {
     default boolean transformSkeleton(WorldModel world, EventScheduler scheduler, ImageStore imageStore)
     {
         if (this.getHealth() <= 0) {
-            Skeleton skeleton = Skeleton.createSkeleton("skeleton" + "_" + this.getId(), this.getPosition(), 0.5, 0.4, imageStore.getImageList("skeleton"), 3);
+            System.out.println("Dude Transformed Into Skeleton!");
+            Skeleton skeleton = Skeleton.createSkeleton("skeleton" + "_" + this.getId(), this.getPosition(), 0.5, 0.4, imageStore.getImageList("skeleton"), 1);
 
             world.removeEntity(scheduler, this);
 

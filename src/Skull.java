@@ -6,7 +6,7 @@ import java.util.List;
  * An entity that exists in the world. See EntityKind for the
  * different kinds of entities that exist.
  */
-public final class Skull implements Scheduable{
+public final class Skull implements Actionable{
     private final String id;
     private Point position;
     private final List<PImage> images;
@@ -18,15 +18,8 @@ public final class Skull implements Scheduable{
 
     /*-----------------------Keys---------------------------------------*/
 
-    public static final double TREE_ANIMATION_MAX = 0.600;
-    public static final double TREE_ANIMATION_MIN = 0.050;
-    private static final double TREE_ACTION_MAX = 1.400;
-    private static final double TREE_ACTION_MIN = 1.000;
-    private static final int TREE_HEALTH_MAX = 3;
-    private static final int TREE_HEALTH_MIN = 1;
     private static final double SKULL_ACTION_ANIMATION_PERIOD = 1.000; // have to be in sync since grows and gains health at same time
     private static final int SKULL_HEALTH_LIMIT = 16;
-    public static final String MAGICTREE_KEY = "magicTree";
 
 
 
@@ -38,7 +31,7 @@ public final class Skull implements Scheduable{
 
     public Skull(String id, Point position, List<PImage> images) {
         this.id = id;
-        this.setPosition(position);
+        this.position = position;
         this.images = images;
         this.imageIndex = 0;
         this.health = 0;
@@ -55,13 +48,20 @@ public final class Skull implements Scheduable{
     }
 
     public void executeActivity(WorldModel world, ImageStore imageStore, EventScheduler scheduler) {
-        this.health = (this.health + 1);
-        this.transform(world,scheduler,imageStore);
+        setHealth(this.health + 1);
+        if (!transform(world,scheduler,imageStore))
+        {
+            scheduler.scheduleEvent(this, this.createActivityAction(world, imageStore), this.getActionPeriod());
+        }
+
+    }
+
+    public Action createActivityAction(WorldModel world, ImageStore imageStore) {
+        return new Activity(this, world, imageStore);
     }
 
     public boolean transform(WorldModel world, EventScheduler scheduler, ImageStore imageStore) {
-
-        if (this.getHealth() >= this.healthLimit) {
+        if (this.health >= this.healthLimit) {
             world.removeEntity(scheduler, this);
             return true;
         }

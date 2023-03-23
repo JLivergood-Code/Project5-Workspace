@@ -51,15 +51,14 @@ public class Hero implements Movable{
     public void executeActivity(WorldModel world, ImageStore imageStore, EventScheduler scheduler) {
         Optional<Entity> target = world.findNearest(this.getPosition(), new ArrayList<>(List.of(Skeleton.class)));
 
-        if (target.isPresent()) {
-            Point tgtPos = target.get().getPosition();
-
+        if (target.isPresent())
+        {
             //if the hero has moved next to the dude
             this.moveTo(world, target.get(), scheduler);
-            scheduler.scheduleEvent(this, this.createActivityAction(world, imageStore), this.actionPeriod);
-
-            }
         }
+        scheduler.scheduleEvent(this, this.createActivityAction(world, imageStore), this.actionPeriod);
+
+    }
 
     public boolean posHelper(WorldModel world, Point newPos)
     {

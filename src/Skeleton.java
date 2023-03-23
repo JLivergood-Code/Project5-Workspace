@@ -53,6 +53,8 @@ public class Skeleton implements Movable {
     public boolean transformSkull(WorldModel world, EventScheduler scheduler, ImageStore imageStore) {
 
         if (this.getHealth() <= 0) {
+            System.out.println("Hero Killed Skeleton!");
+
             Skull skull = Skull.createSkull("skull", this.getPosition(),  imageStore.getImageList("skull"));
 
             world.removeEntity(scheduler, this);
@@ -64,11 +66,11 @@ public class Skeleton implements Movable {
         }
         return false;
     }
+
     public void executeActivity(WorldModel world, ImageStore imageStore, EventScheduler scheduler) {
         Optional<Entity> target = world.findNearest(this.getPosition(), new ArrayList<>(List.of(DudeFull.class, DudeNotFull.class)));
         if (target.isPresent()) {
             moveTo(world, target.get(), scheduler);
-            scheduler.scheduleEvent(this, this.createActivityAction(world, imageStore), this.actionPeriod);
         }
         if (!this.transformSkull(world, scheduler, imageStore))
         {
@@ -86,6 +88,7 @@ public class Skeleton implements Movable {
         if(target instanceof Dude) {
             Dude dude = (Dude) target;
             dude.setHealth(dude.getHealth() - 1);
+            System.out.println("Skully Hit!");
         }
     }
 
