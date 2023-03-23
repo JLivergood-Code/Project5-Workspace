@@ -1,12 +1,12 @@
-import java.util.*;
-
 import processing.core.PImage;
+
+import java.util.List;
 
 /**
  * An entity that exists in the world. See EntityKind for the
  * different kinds of entities that exist.
  */
-public final class Stump implements Entity {
+public final class MagicStump implements Entity {
     private final String id;
     private Point position;
     private final List<PImage> images;
@@ -14,12 +14,12 @@ public final class Stump implements Entity {
 
 
     //static
-    public static Stump createStump(String id, Point position, List<PImage> images) {
-        return new Stump(id, position, images);
+    public static MagicStump createMagicStump(String id, Point position, List<PImage> images) {
+        return new MagicStump(id, position, images);
     }
 
 
-    public Stump(String id, Point position, List<PImage> images) {
+    public MagicStump(String id, Point position, List<PImage> images) {
         this.id = id;
         this.setPosition(position);
         this.images = images;
@@ -27,13 +27,7 @@ public final class Stump implements Entity {
 
     }
 
-    public void transformMagic(WorldModel world, EventScheduler scheduler, ImageStore imageStore) {
-        MagicStump magicStump = MagicStump.createMagicStump(WorldModel.getSaplingKey() + "_" + this.id, this.position,  imageStore.getImageList("magicStump"));
 
-        world.removeEntity(scheduler, this);
-
-        world.addEntity(magicStump);
-    }
 
     /**
      * Helper method for testing. Preserve this functionality while refactoring.

@@ -1,12 +1,12 @@
-import java.util.*;
-
 import processing.core.PImage;
+
+import java.util.List;
 
 /**
  * An entity that exists in the world. See EntityKind for the
  * different kinds of entities that exist.
  */
-public final class Tree implements Actionable,Plant {
+public final class MagicTree implements Actionable,Plant {
     private String id;
     private Point position;
     private List<PImage> images;
@@ -19,12 +19,12 @@ public final class Tree implements Actionable,Plant {
 
 
     //static
-    public static Tree createTree(String id, Point position, double actionPeriod, double animationPeriod, int health, List<PImage> images) {
-        return new Tree(id, position, images, actionPeriod, animationPeriod, health);
+    public static MagicTree createMagicTree(String id, Point position, double actionPeriod, double animationPeriod, int health, List<PImage> images) {
+        return new MagicTree(id, position, images, actionPeriod, animationPeriod, health);
     }
 
 
-    public Tree(String id, Point position, List<PImage> images, double actionPeriod, double animationPeriod, int health) {
+    public MagicTree(String id, Point position, List<PImage> images, double actionPeriod, double animationPeriod, int health) {
         this.id = id;
         this.setPosition(position);
         this.images = images;
@@ -41,14 +41,7 @@ public final class Tree implements Actionable,Plant {
         world.addEntity(deadTree);
         deadTree.scheduleActions(scheduler, world, imageStore);
     }
-    public void transformMagic(WorldModel world, EventScheduler scheduler, ImageStore imageStore) {
-        MagicTree magicTree = MagicTree.createMagicTree("magicTree"+ this.id, this.position, Functions.getNumFromRange(Sapling.TREE_ACTION_MAX, Sapling.TREE_ACTION_MIN), Functions.getNumFromRange(Sapling.TREE_ANIMATION_MAX, Sapling.TREE_ANIMATION_MIN), Functions.getIntFromRange(Sapling.TREE_HEALTH_MAX, Sapling.TREE_HEALTH_MIN), imageStore.getImageList("magicTree"));
 
-        world.removeEntity(scheduler, this);
-
-        world.addEntity(magicTree);
-        magicTree.scheduleActions(scheduler, world, imageStore);
-    }
 
 
     /**
@@ -65,8 +58,18 @@ public final class Tree implements Actionable,Plant {
 
 
     public boolean transform(WorldModel world, EventScheduler scheduler, ImageStore imageStore) {
-        return Plant.super.transform(world, scheduler, imageStore);
+        if (this.getHealth() <= 0) {
+            MagicStump magicStump = MagicStump.createMagicStump("magicStump", this.getPosition(), imageStore.getImageList("magicStump"));
+
+            world.removeEntity(scheduler, this);
+
+            world.addEntity(magicStump);
+
+            return true;
+        }
+        return false;
     }
+
 
     public PImage getCurrentImage() {
         return getImages().get(this.getImageIndex() % this.getImages().size());

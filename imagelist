@@ -7,6 +7,13 @@ obstacle images/water0.png
 grass images/grass.png
 flowers images/flowers.png
 background_default images/none.bmp
+dead_dirt_bot_left_corner images/dead_dirt_bot_left_corner.png
+dead_dirt_bot_right_up images/dead_dirt_bot_right_up.png
+dead_dirt_horiz images/dead_dirt_horiz.png
+dead_dirt_vert_left images/dead_dirt_vert_left.png
+dead_dirt_vert_left_bot images/dead_dirt_vert_left_bot.png
+dead_dirt_vert_right images/dead_dirt_vert_right.png
+deadFlowers images/deadFlowers.png
 deadGrass images/deadGrass.png
 deadTree images/deadTree1.png
 deadTree images/deadTree2.png
@@ -50,6 +57,42 @@ hero images/hero4.png
 hero images/hero5.png
 hero images/hero6.png
 hero images/hero7.png
+magic_dirt_bot_left_corner images/magic_dirt_bot_left_corner.png
+magic_dirt_bot_right_up images/magic_dirt_bot_right_up.png
+magic_dirt_horiz images/magic_dirt_horiz.png
+magic_dirt_vert_left images/magic_dirt_vert_left.png
+magic_dirt_vert_left_bot images/magic_dirt_vert_left_bot.png
+magic_dirt_vert_right images/magic_dirt_vert_right.png
+magicGrass images/magicGrass.png
+magicFlowers images/magicFlowers.png
+magicSap images/magicSap0.png
+magicSap images/magicSap1.png
+magicSap images/magicSap2.png
+magicSap images/magicSap3.png
+magicSap images/magicSap4.png
+magicStump images/magicStump.png
+magicTree images/magicTree1.png
+magicTree images/magicTree2.png
+magicTree images/magicTree3.png
 skeleton images/skeleton1.png
 skeleton images/skeleton2.png
 skeleton images/skeleton3.png
+skull images/skull01.png
+skull images/skull02.png
+skull images/skull03.png
+skull images/skull04.png
+skull images/skull05.png
+skull images/skull06.png
+skull images/skull07.png
+skull images/skull08.png
+skull images/skull09.png
+skull images/skull10.png
+skull images/skull11.png
+skull images/skull12.png
+skull images/skull13.png
+skull images/skull14.png
+skull images/skull15.png
+skull images/skull16.png
+
+
+

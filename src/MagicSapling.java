@@ -1,12 +1,12 @@
-import java.util.*;
-
 import processing.core.PImage;
+
+import java.util.List;
 
 /**
  * An entity that exists in the world. See EntityKind for the
  * different kinds of entities that exist.
  */
-public final class Sapling implements Plant{
+public final class MagicSapling implements Plant{
     private final String id;
     private Point position;
     private final List<PImage> images;
@@ -20,23 +20,28 @@ public final class Sapling implements Plant{
 
     public static final double TREE_ANIMATION_MAX = 0.600;
     public static final double TREE_ANIMATION_MIN = 0.050;
-    public static final double TREE_ACTION_MAX = 1.400;
-    public static final double TREE_ACTION_MIN = 1.000;
-    public static final int TREE_HEALTH_MAX = 3;
-    public static final int TREE_HEALTH_MIN = 1;
+    private static final double TREE_ACTION_MAX = 1.400;
+    private static final double TREE_ACTION_MIN = 1.000;
+    private static final int TREE_HEALTH_MAX = 3;
+    private static final int TREE_HEALTH_MIN = 1;
     private static final double SAPLING_ACTION_ANIMATION_PERIOD = 1.000; // have to be in sync since grows and gains health at same time
     private static final int SAPLING_HEALTH_LIMIT = 5;
+    public static final String MAGICTREE_KEY = "magicTree";
 
 
 
     //static
     // health starts at 0 and builds up until ready to convert to Tree
-    public static Sapling createSapling(String id, Point position, List<PImage> images, int health) {
-        return new Sapling(id, position, images,  SAPLING_ACTION_ANIMATION_PERIOD, SAPLING_ACTION_ANIMATION_PERIOD, SAPLING_HEALTH_LIMIT);
+    public static MagicSapling createMagicSapling(String id, Point position, List<PImage> images, int health) {
+        return new MagicSapling(id, position, images,  SAPLING_ACTION_ANIMATION_PERIOD, SAPLING_ACTION_ANIMATION_PERIOD, SAPLING_HEALTH_LIMIT);
+    }
+
+    public static MagicSapling createMagicSapling(String id, Point position, List<PImage> images, double action_period, double animationPeriod, int health) {
+        return new MagicSapling(id, position, images, action_period, animationPeriod, health);
     }
 
 
-    public Sapling(String id, Point position, List<PImage> images, double actionPeriod, double animationPeriod, int healthLimit) {
+    public MagicSapling(String id, Point position, List<PImage> images, double actionPeriod, double animationPeriod, int healthLimit) {
         this.id = id;
         this.setPosition(position);
         this.images = images;
@@ -61,12 +66,12 @@ public final class Sapling implements Plant{
     public boolean transform(WorldModel world, EventScheduler scheduler, ImageStore imageStore) {
 
         if (!Plant.super.transform(world, scheduler, imageStore) && this.health >= this.healthLimit) {
-            Tree tree = Tree.createTree(WorldModel.getTreeKey() + "_" + this.id, this.position, Functions.getNumFromRange(TREE_ACTION_MAX, TREE_ACTION_MIN), Functions.getNumFromRange(TREE_ANIMATION_MAX, TREE_ANIMATION_MIN), Functions.getIntFromRange(TREE_HEALTH_MAX, TREE_HEALTH_MIN), imageStore.getImageList(WorldModel.getTreeKey()));
+            MagicTree magicTree = MagicTree.createMagicTree("magicTree",this.position, Functions.getNumFromRange(TREE_ACTION_MAX, TREE_ACTION_MIN), Functions.getNumFromRange(TREE_ANIMATION_MAX, TREE_ANIMATION_MIN), Functions.getIntFromRange(TREE_HEALTH_MAX, TREE_HEALTH_MIN), imageStore.getImageList("magicTree"));
 
             world.removeEntity(scheduler, this);
 
-            world.addEntity(tree);
-            tree.scheduleActions(scheduler, world, imageStore);
+            world.addEntity(magicTree);
+            magicTree.scheduleActions(scheduler, world, imageStore);
 
             return true;
         }
@@ -74,14 +79,7 @@ public final class Sapling implements Plant{
         return false;
     }
 
-    public void transformMagic(WorldModel world, EventScheduler scheduler, ImageStore imageStore) {
-        MagicSapling magicSapling = MagicSapling.createMagicSapling(WorldModel.getSaplingKey() + "_" + this.id, this.position,  imageStore.getImageList("magicSap"), this.actionPeriod, this.animationPeriod, Functions.getIntFromRange(Sapling.TREE_HEALTH_MAX, Sapling.TREE_HEALTH_MIN));
 
-        world.removeEntity(scheduler, this);
-
-        world.addEntity(magicSapling);
-        magicSapling.scheduleActions(scheduler, world, imageStore);
-    }
 
 
 

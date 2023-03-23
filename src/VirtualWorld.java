@@ -71,14 +71,69 @@ public final class VirtualWorld extends PApplet {
     // Be sure to refactor this method as appropriate
     public void mousePressed() {
         Point pressed = mouseToPoint();
+        System.out.println("CLICK! " + pressed.getX() + ", " + pressed.getY());
+        Optional<Entity> entityOptional = world.getOccupant(pressed);
+        if (entityOptional.isPresent()) {
+            Entity entity = entityOptional.get();
+            if (entity instanceof Plant) {
+                System.out.println(entity.getClass() + " : " + ((Plant) entity).getHealth());
+            } else if (entity instanceof Fairy) {
+                magicPress(pressed);
+            }
+            else if (entity instanceof House){house_click(pressed);
+            }
+        }
+        else {
+            deadPress(pressed);
+        }
+    }
+private void house_click(Point pressed){
+    Point up = new Point(pressed.getX(),pressed.getY()+1);
+    Point down = new Point(pressed.getX(),pressed.getY()-1);
+    if (world.withinBounds(up) && !world.isOccupied(up)){
+        DudeNotFull dude = DudeNotFull.createDudeNotFull("dude", up, 0.5, 0.4, world.DUDE_LIMIT,imageStore.getImageList("dude"),3);
+        world.addEntity(dude);
+        dude.scheduleActions(scheduler, world, imageStore);}
+    if (world.withinBounds(down) && !world.isOccupied(down)){
+        DudeNotFull dude = DudeNotFull.createDudeNotFull("dude", down, 0.5, 0.4, world.DUDE_LIMIT,imageStore.getImageList("dude"),3);
+        world.addEntity(dude);
+        dude.scheduleActions(scheduler, world, imageStore);}
+}
+    private void swap_dead_background(Point current){
+        if (world.getBackgroundCell(current).getImages().equals(imageStore.getImageList("grass"))) {
+            world.setBackgroundCell(current, new Background("deadGrass", imageStore.getImageList("deadGrass")));
+        }
+        else if (world.getBackgroundCell(current).getImages().equals(imageStore.getImageList("flowers"))) {
+            world.setBackgroundCell(current, new Background("deadGrass", imageStore.getImageList("deadFlowers")));
+        }
+        else if (world.getBackgroundCell(current).getImages().equals(imageStore.getImageList("dirt_bot_left_corner"))) {
+            world.setBackgroundCell(current, new Background("dead_dirt_bot_left_corner", imageStore.getImageList("dead_dirt_bot_left_corner")));
+        }
+        else if (world.getBackgroundCell(current).getImages().equals(imageStore.getImageList("dirt_bot_right_up"))) {
+            world.setBackgroundCell(current, new Background("dead_dirt_bot_right_up", imageStore.getImageList("dead_dirt_bot_right_up")));
+        }
+        else if (world.getBackgroundCell(current).getImages().equals(imageStore.getImageList("dirt_horiz"))) {
+            world.setBackgroundCell(current, new Background("dead_dirt_horiz", imageStore.getImageList("dead_dirt_horiz")));
+        }
+        else if (world.getBackgroundCell(current).getImages().equals(imageStore.getImageList("dirt_vert_left"))) {
+            world.setBackgroundCell(current, new Background("dead_dirt_vert_right", imageStore.getImageList("dead_dirt_vert_right")));
+        }
+        else if (world.getBackgroundCell(current).getImages().equals(imageStore.getImageList("dirt_vert_left_bot"))) {
+            world.setBackgroundCell(current, new Background("dead_dirt_vert_left_bot", imageStore.getImageList("dead_dirt_vert_left_bot")));
+        }
+        else if (world.getBackgroundCell(current).getImages().equals(imageStore.getImageList("dirt_vert_right"))) {
+            world.setBackgroundCell(current, new Background("dead_dirt_vert_left", imageStore.getImageList("dead_dirt_vert_left")));
+        }
+    }
 
+    private void deadPress(Point pressed){
         for (int row = Math.max(pressed.getY() - 10, 0); row < Math.min(pressed.getY() + 10, NUM_ROWS); row++)
         {
             for (int col = Math.max(pressed.getX() - 10, 0); col < Math.min(pressed.getX() + 10, NUM_COLS); col++)
             {
                 Point current = new Point(col, row);
 
-                if (Point.distanceSquared(current, pressed) < 8)
+                if (Point.distanceSquared(current, pressed) < 8 )
                 {
                     Optional<Entity> entityOptional = world.getOccupant(current);
                     if (entityOptional.isPresent()) {
@@ -87,8 +142,7 @@ public final class VirtualWorld extends PApplet {
                             ((Tree) entity).transformDead(world,scheduler,imageStore);
                         }
                     }
-                    world.setBackgroundCell(current, new Background("deadGrass", imageStore.getImageList("deadGrass")));
-
+                    swap_dead_background(current);
                     if (Point.adjacent(current, pressed) && !world.isOccupied(current))
                     {
                         Skeleton newSkeleton = Skeleton.createSkeleton("skeleton", current, 0.5, 0.4, imageStore.getImageList("skeleton"), 1);
@@ -98,19 +152,89 @@ public final class VirtualWorld extends PApplet {
                 }
             }
         }
-        world.setBackgroundCell(pressed, new Background("deadGrass", imageStore.getImageList("deadGrass")));
-        System.out.println("CLICK! " + pressed.getX() + ", " + pressed.getY());
-        Optional<Entity> entityOptional = world.getOccupant(pressed);
-        if (entityOptional.isPresent()) {
-            Entity entity = entityOptional.get();
-            if (entity instanceof Plant)
-                System.out.println(entity.getClass() + " : " + ((Plant)entity).getHealth());
-            else
-                System.out.println(entity.getClass());
-        }
-
+        swap_dead_background(pressed);
     }
+    private void swap_magic_background(Point current){
+        if (world.getBackgroundCell(current).getImages().equals(imageStore.getImageList("grass"))||world.getBackgroundCell(current).getImages().equals(imageStore.getImageList("deadGrass"))) {
+            world.setBackgroundCell(current, new Background("magicGrass", imageStore.getImageList("magicGrass")));
+        }
+        else if (world.getBackgroundCell(current).getImages().equals(imageStore.getImageList("flowers")) || world.getBackgroundCell(current).getImages().equals(imageStore.getImageList("deadFlowers"))) {
+            world.setBackgroundCell(current, new Background("magicFlowers", imageStore.getImageList("magicFlowers")));
+        }
+        else if (world.getBackgroundCell(current).getImages().equals(imageStore.getImageList("dirt_bot_left_corner"))||world.getBackgroundCell(current).getImages().equals(imageStore.getImageList("dead_dirt_bot_left_corner"))) {
+            world.setBackgroundCell(current, new Background("magic_dirt_bot_left_corner", imageStore.getImageList("magic_dirt_bot_left_corner")));
+        }
+        else if (world.getBackgroundCell(current).getImages().equals(imageStore.getImageList("dirt_bot_right_up"))||world.getBackgroundCell(current).getImages().equals(imageStore.getImageList("dead_dirt_bot_right_up"))) {
+            world.setBackgroundCell(current, new Background("magic_dirt_bot_right_up", imageStore.getImageList("magic_dirt_bot_right_up")));
+        }
+        else if (world.getBackgroundCell(current).getImages().equals(imageStore.getImageList("dirt_horiz"))||world.getBackgroundCell(current).getImages().equals(imageStore.getImageList("dead_dirt_horiz"))) {
+            world.setBackgroundCell(current, new Background("magic_dirt_horiz", imageStore.getImageList("magic_dirt_horiz")));
+        }
+        else if (world.getBackgroundCell(current).getImages().equals(imageStore.getImageList("dirt_vert_left"))||world.getBackgroundCell(current).getImages().equals(imageStore.getImageList("dead_dirt_vert_right"))) {
+            world.setBackgroundCell(current, new Background("magic_dirt_vert_right", imageStore.getImageList("magic_dirt_vert_right")));
+        }
+        else if (world.getBackgroundCell(current).getImages().equals(imageStore.getImageList("dirt_vert_left_bot"))||world.getBackgroundCell(current).getImages().equals(imageStore.getImageList("dead_dirt_vert_left_bot"))) {
+            world.setBackgroundCell(current, new Background("magic_dirt_vert_left_bot", imageStore.getImageList("magic_dirt_vert_left_bot")));
+        }
+        else if (world.getBackgroundCell(current).getImages().equals(imageStore.getImageList("dirt_vert_right"))||world.getBackgroundCell(current).getImages().equals(imageStore.getImageList("dead_dirt_vert_left"))) {
+            world.setBackgroundCell(current, new Background("magic_dirt_vert_left", imageStore.getImageList("magic_dirt_vert_left")));
+        }
+    }
+    private void magicPress(Point pressed){
+        Point corner1 = (new Point(pressed.getX()+3, pressed.getY()+3));
+        Point corner2 = (new Point(pressed.getX()-3, pressed.getY()+3));
+        Point corner3 = (new Point(pressed.getX()+3, pressed.getY()-3));
+        Point corner4 = (new Point(pressed.getX()-3, pressed.getY()-3));
+        Point behind = new Point(pressed.getX() -1, pressed.getY()-1);
+        Point infront = new Point(pressed.getX() +1, pressed.getY()+1);
+        if (world.withinBounds(behind) && !world.isOccupied(behind)){
+            Fairy fairy = Fairy.createFairy("fairy", behind, 0.75,.25, imageStore.getImageList("fairy"));
+            world.addEntity(fairy);
+            fairy.scheduleActions(scheduler, world, imageStore);
+        }
+        if (world.withinBounds(infront)&& !world.isOccupied(infront)){
+            Fairy fairy = Fairy.createFairy("fairy", infront, 0.75,.25, imageStore.getImageList("fairy"));
+            world.addEntity(fairy);
+            fairy.scheduleActions(scheduler, world, imageStore);
+        }
+        for (int row = Math.max(pressed.getY() - 10, 0); row < Math.min(pressed.getY() + 10, NUM_ROWS); row++) {
+            for (int col = Math.max(pressed.getX() - 10, 0); col < Math.min(pressed.getX() + 10, NUM_COLS); col++) {
+                Point current = new Point(col, row);
 
+                if (Point.distanceSquared(current, pressed) < 10 &
+                        (Point.distanceSquared(current, corner1) > 6) &
+                        (Point.distanceSquared(current, corner2) > 6) &
+                        (Point.distanceSquared(current, corner3) > 6) &
+                        (Point.distanceSquared(current, corner4) > 6)) {
+                    Optional<Entity> entityOptional = world.getOccupant(current);
+                    if (entityOptional.isPresent()) {
+                        Entity entity = entityOptional.get();
+                        if (entity instanceof Tree) {
+                            ((Tree) entity).transformMagic(world, scheduler, imageStore);
+                        } else if (entity instanceof Sapling) {
+                            ((Sapling) entity).transformMagic(world, scheduler, imageStore);
+                        } else if (entity instanceof Stump) {
+                            ((Stump) entity).transformMagic(world, scheduler, imageStore);
+                        }
+                    }
+
+                    swap_magic_background(current);
+
+                }
+            }
+            Optional<Entity> entityO = world.getOccupant(pressed);
+            if (entityO.isPresent()) {
+                Entity pressedEntity = entityO.get();
+                if (pressedEntity instanceof Fairy) {
+                    Hero hero = Hero.createHero("hero", pressed, 0.5, 0.4, imageStore.getImageList("hero"));
+                    world.removeEntity(scheduler, pressedEntity);
+                    world.addEntity(hero);
+                    hero.scheduleActions(scheduler, world, imageStore);
+                }
+            }
+        }
+        swap_magic_background(pressed);
+    }
     public void scheduleActions(WorldModel world, EventScheduler scheduler, ImageStore imageStore) {
         for (Entity entity : world.getEntities()) {
             if(entity instanceof Actionable)

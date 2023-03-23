@@ -16,6 +16,7 @@ public class Hero implements Movable{
     public static double HERO_ACTION_VALUE = 0.787;
     public static double HERO_ANIMATION_VALUE = 0.180;
 
+
     /*-----------------------Keys---------------------------------------*/
 
 
@@ -54,17 +55,11 @@ public class Hero implements Movable{
             Point tgtPos = target.get().getPosition();
 
             //if the hero has moved next to the dude
-            if (this.moveTo(world, target.get(), scheduler) && Point.adjacent(this.getPosition(), tgtPos)) {
+            this.moveTo(world, target.get(), scheduler);
+            scheduler.scheduleEvent(this, this.createActivityAction(world, imageStore), this.actionPeriod);
 
-                Entity skeleTarget = target.get();
-                if(skeleTarget instanceof Skeleton)
-                {
-                    Skeleton s = (Skeleton) skeleTarget;
-                    //s.transform(); transforms the skeleton
-                }
             }
         }
-    }
 
     public boolean posHelper(WorldModel world, Point newPos)
     {
@@ -73,7 +68,12 @@ public class Hero implements Movable{
     }
 
     @Override
-    public void moveHelper(WorldModel world, Entity target, EventScheduler scheduler) {}
+    public void moveHelper(WorldModel world, Entity target, EventScheduler scheduler) {
+        if(target instanceof Skeleton) {
+            Skeleton skeleton = (Skeleton) target;
+            skeleton.setHealth(skeleton.getHealth() - 1);
+        }
+    }
 
     public Action createAnimationAction(int repeatCount) {
         return new Animation( this, repeatCount);

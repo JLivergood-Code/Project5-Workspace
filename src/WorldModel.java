@@ -40,7 +40,7 @@ public final class WorldModel {
     public static final String DUDE_KEY = "dude";
     public static final int DUDE_ACTION_PERIOD = 0;
     public static final int DUDE_ANIMATION_PERIOD = 1;
-    private static final int DUDE_LIMIT = 2;
+    public static final int DUDE_LIMIT = 2;
     private static final int DUDE_NUM_PROPERTIES = 3;
     private static final int PROPERTY_KEY = 0;
 

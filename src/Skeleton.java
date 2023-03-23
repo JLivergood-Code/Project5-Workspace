@@ -50,11 +50,28 @@ public class Skeleton implements Movable {
     public int getImageIndex() {
         return imageIndex;
     }
+    public boolean transformSkull(WorldModel world, EventScheduler scheduler, ImageStore imageStore) {
 
+        if (this.getHealth() <= 0) {
+            Skull skull = Skull.createSkull("skull", this.getPosition(),  imageStore.getImageList("skull"));
+
+            world.removeEntity(scheduler, this);
+
+            world.addEntity(skull);
+            skull.scheduleActions(scheduler, world, imageStore);
+
+            return true;
+        }
+        return false;
+    }
     public void executeActivity(WorldModel world, ImageStore imageStore, EventScheduler scheduler) {
         Optional<Entity> target = world.findNearest(this.getPosition(), new ArrayList<>(List.of(DudeFull.class, DudeNotFull.class)));
         if (target.isPresent()) {
             moveTo(world, target.get(), scheduler);
+            scheduler.scheduleEvent(this, this.createActivityAction(world, imageStore), this.actionPeriod);
+        }
+        if (!this.transformSkull(world, scheduler, imageStore))
+        {
             scheduler.scheduleEvent(this, this.createActivityAction(world, imageStore), this.actionPeriod);
         }
     }
@@ -83,6 +100,8 @@ public class Skeleton implements Movable {
     public static Skeleton createSkeleton(String id, Point position, double actionPeriod, double animationPeriod, List<PImage> images, int health) {
         return new Skeleton(id, position, images, actionPeriod, animationPeriod, health);
     }
+    public int getHealth(){return health;}
+    public void setHealth(int health){this.health=health;}
 
 
 

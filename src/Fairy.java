@@ -41,20 +41,30 @@ public final class Fairy implements Movable {
     }
 
     public void executeActivity(WorldModel world, ImageStore imageStore, EventScheduler scheduler) {
-        Optional<Entity> fairyTarget = world.findNearest(this.getPosition(), new ArrayList<>(List.of(Stump.class)));
+        Optional<Entity> fairyTarget = world.findNearest(this.getPosition(), new ArrayList<>(List.of(Stump.class, MagicStump.class)));
 
         if (fairyTarget.isPresent()) {
             Point tgtPos = fairyTarget.get().getPosition();
 
             if (this.moveTo(world, fairyTarget.get(), scheduler)) {
+                Entity entity = fairyTarget.get();
+                if (entity instanceof Stump) {
 
-                Sapling sapling = Sapling.createSapling(WorldModel.getSaplingKey() + "_" + fairyTarget.get().getId(), tgtPos, imageStore.getImageList(WorldModel.getSaplingKey()), 0);
+                    Sapling sapling = Sapling.createSapling(WorldModel.getSaplingKey() + "_" + fairyTarget.get().getId(), tgtPos, imageStore.getImageList(WorldModel.getSaplingKey()), 0);
 
-                world.addEntity(sapling);
-                sapling.scheduleActions(scheduler, world, imageStore);
+                    world.addEntity(sapling);
+                    sapling.scheduleActions(scheduler, world, imageStore);
+                }
+                else if(entity instanceof MagicStump) {
+
+                        MagicSapling magicSapling = MagicSapling.createMagicSapling("magicSap", tgtPos, imageStore.getImageList("magicSap"), 0);
+
+                        world.addEntity(magicSapling);
+                        magicSapling.scheduleActions(scheduler, world, imageStore);
+                    }
+
+                    }
             }
-        }
-
         scheduler.scheduleEvent(this, createActivityAction(world, imageStore), this.actionPeriod);
     }
 
