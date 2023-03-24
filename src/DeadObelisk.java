@@ -51,7 +51,7 @@ public class DeadObelisk implements Actionable{
         else if (world.getBackgroundCell(current).getImages().equals(imageStore.getImageList("dead_dirt_bot_right_up"))) {
             world.setBackgroundCell(current, new Background("dirt_bot_right_up", imageStore.getImageList("dirt_bot_right_up")));
         }
-        else if (world.getBackgroundCell(current).getImages().equals(imageStore.getImageList("dirt_horiz"))) {
+        else if (world.getBackgroundCell(current).getImages().equals(imageStore.getImageList("dead_dirt_horiz"))) {
             world.setBackgroundCell(current, new Background("dirt_horiz", imageStore.getImageList("dirt_horiz")));
         }
         else if (world.getBackgroundCell(current).getImages().equals(imageStore.getImageList("dead_dirt_vert_right"))) {
