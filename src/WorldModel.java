@@ -8,6 +8,7 @@ import java.util.*;
  * location in the world, and the entities that populate the world.
  */
 public final class WorldModel {
+    private boolean programmers = false;
     private int numRows;
     private int numCols;
     private Background[][] background;
@@ -346,5 +347,13 @@ public final class WorldModel {
 
     public void setEntities(Set<Entity> entities) {
         this.entities = entities;
+    }
+
+    public boolean isProgrammers() {
+        return programmers;
+    }
+
+    public void setProgrammers(boolean programmers) {
+        this.programmers = programmers;
     }
 }

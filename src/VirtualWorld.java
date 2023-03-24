@@ -108,6 +108,11 @@ public final class VirtualWorld extends PApplet {
 private void house_click(Point pressed){
     Point up = new Point(pressed.getX(),pressed.getY()+1);
     Point down = new Point(pressed.getX(),pressed.getY()-1);
+    if (!world.isProgrammers()) {
+        addProgramers();
+        world.setProgrammers(true);
+    }
+    else{
     if (world.withinBounds(up) && !world.isOccupied(up)){
         DudeNotFull dude = DudeNotFull.createDudeNotFull("dude", up, DUDE_ACTION_VALUE, DUDE_ANIMATION_VALUE, world.DUDE_LIMIT,imageStore.getImageList("dude"),DUDE_HEALTH);
         world.addEntity(dude);
@@ -118,7 +123,8 @@ private void house_click(Point pressed){
         world.addEntity(dude);
         dude.scheduleActions(scheduler, world, imageStore);
     }
-}
+    }
+    }
     private void swap_dead_background(Point current){
         if (world.getBackgroundCell(current).getImages().equals(imageStore.getImageList("grass"))) {
             world.setBackgroundCell(current, new Background("deadGrass", imageStore.getImageList("deadGrass")));
@@ -320,7 +326,29 @@ private void house_click(Point pressed){
             view.shiftView( dx, dy);
         }
     }
-
+public void addProgramers(){
+        Point pos1 = new Point(11, 3);
+    Point pos2 = new Point(9, 3);
+    Point pos3 = new Point(13, 3);
+    if (world.isOccupied(pos1)){
+        world.removeEntityAt(pos1);
+    }
+    if (world.isOccupied(pos2)){
+        world.removeEntityAt(pos2);
+    }
+    if (world.isOccupied(pos3)){
+        world.removeEntityAt(pos3);
+    }
+    Programmer jacob =  new Programmer("jacob", pos1, imageStore.getImageList("jacob"), 0.5, 0.4);
+    Programmer josh =  new Programmer("josh", pos1, imageStore.getImageList("josh"), 0.5, 0.4);
+    Programmer leah =  new Programmer("leah", pos1, imageStore.getImageList("leah"), 0.5, 0.4);
+    world.addEntity(jacob);
+    jacob.scheduleActions(scheduler, world, imageStore);
+    world.addEntity(josh);
+    josh.scheduleActions(scheduler, world, imageStore);
+    world.addEntity(leah);
+    leah.scheduleActions(scheduler, world, imageStore);
+}
     public static Background createDefaultBackground(ImageStore imageStore) {
         return new Background(DEFAULT_IMAGE_NAME, imageStore.getImageList( DEFAULT_IMAGE_NAME));
     }

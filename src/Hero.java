@@ -51,6 +51,7 @@ public class Hero implements Movable{
     public void executeActivity(WorldModel world, ImageStore imageStore, EventScheduler scheduler) {
         Optional<Entity> target = world.findNearest(this.getPosition(), new ArrayList<>(List.of(Skeleton.class)));
 
+
         if (target.isPresent())
         {
             //if the hero has moved next to the dude
